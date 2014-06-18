@@ -138,7 +138,8 @@ function RepoBuilder(build, directory){
 
     this.makeBuild = function(documents){
         return {
-            buid:build,
+            buid: build,
+            timestamp: Date.now(),
             documents: documents
         };
     }

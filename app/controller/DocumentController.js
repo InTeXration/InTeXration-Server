@@ -4,4 +4,4 @@ function DocumentController(mongoose){
 
 }
 
-module.exports = BuildController;
+module.exports = DocumentController;

@@ -8,6 +8,7 @@ var CONFIG = require('config');
 
 var HookController = require('./app/controller/HookController');
 var BuildController = require('./app/controller/BuildController');
+var FileController = require('./app/controller/FileController');
 
 mongoose.connect('mongodb://'+CONFIG.mongo.host+':'+CONFIG.mongo.port+'/'+CONFIG.mongo.db);
 
@@ -24,14 +25,22 @@ app.post('/hook/:key', function(req, res){
 });
 
 var buildController = new BuildController(mongoose);
-app.get('/builder',  function(req, res){
+app.get('/build',  function(req, res){
     buildController.getAll(req, res);
 });
-app.get('/builder/:owner', function(req, res){
+app.get('/build/:owner', function(req, res){
     buildController.getByOwner(req, res);
 });
-app.get('/builder/:owner/:repo',  function(req, res){
+app.get('/build/:owner/:repo',  function(req, res){
     buildController.getByRepo(req, res);
+});
+
+var fileController = new FileController(mongoose);
+app.get('/file/:owner/:repo/:name/pdf', function(req, res){
+    fileController.getPdf(req, res);
+});
+app.get('/file/:owner/:repo/:name/log', function(req, res){
+    fileController.getLog(req, res);
 });
 
 app.get('*', function(req, res){

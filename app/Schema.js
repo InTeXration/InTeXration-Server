@@ -1,7 +1,8 @@
-mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
 module.exports = {
-    buildSchema: mongoose.Schema({
+    buildSchema: Schema({
         owner: String,
         repo: String,
         url: String,
@@ -9,10 +10,10 @@ module.exports = {
         message:String,
         timestamp : { type : Date, default: Date.now }
     }),
-    apiKeySchema: mongoose.Schema({
+    apiKeySchema: Schema({
         user: String
     }),
-    documentSchema: mongoose.Schema({
+    documentSchema: Schema({
         name: String,
         timestamp: { type : Date, default: Date.now },
         build: {
@@ -25,7 +26,8 @@ module.exports = {
         },
         files: [{
             type: String,
-            url: String
+            name: String,
+            dir: String
         }]
     })
 };
