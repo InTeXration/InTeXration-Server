@@ -1,4 +1,4 @@
-InTeXration-Server
-==================
+Back-End
+========
 
-InTeXration Back-End Server
+The InTeXration Back End
