@@ -1,6 +1,6 @@
-var RepoBuilder = require("./../builder/RepoBuilder"),
-    Schema = require("./../Schema"),
-    ApiKeyManager = require("./../manager/ApiKeyManager"),
+var RepoBuilder = require('./../builder/RepoBuilder'),
+    Schema = require('./../Schema');
+    ApiKeyManager = require('./../manager/ApiKeyManager'),
     tmp = require('tmp');
 
     function HookController(mongoose){
@@ -36,7 +36,13 @@ var RepoBuilder = require("./../builder/RepoBuilder"),
                                 if(err) console.log(err);
                                 else {
                                     var repoBuilder = new RepoBuilder(build, path);
-                                    repoBuilder.build().then(console.log, console.error);
+                                    repoBuilder.build().then(function(doc){
+                                        var Document = mongoose.model('Document', Schema.documentSchema);
+                                        var document = Document(doc);
+                                        document.save(function(err){
+                                            console.error(err);
+                                        });
+                                    }, console.error);
                                 }
                             });
                             res.json(build);

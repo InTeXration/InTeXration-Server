@@ -25,7 +25,7 @@ function FileController(mongoose){
         serve(req, res, 'pdf');
     };
 
-    this.getPdf = function(req, res){
+    this.getLog = function(req, res){
         serve(req, res, 'log');
     };}
 

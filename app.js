@@ -9,6 +9,7 @@ var CONFIG = require('config');
 var HookController = require('./app/controller/HookController');
 var BuildController = require('./app/controller/BuildController');
 var FileController = require('./app/controller/FileController');
+var DocumentController = require('./app/controller/DocumentController');
 
 mongoose.connect('mongodb://'+CONFIG.mongo.host+':'+CONFIG.mongo.port+'/'+CONFIG.mongo.db);
 
@@ -33,6 +34,11 @@ app.get('/build/:owner', function(req, res){
 });
 app.get('/build/:owner/:repo',  function(req, res){
     buildController.getByRepo(req, res);
+});
+
+var documentController = new DocumentController(mongoose);
+app.get('/document',  function(req, res){
+    documentController.getAll(req, res);
 });
 
 var fileController = new FileController(mongoose);

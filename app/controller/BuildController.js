@@ -1,4 +1,4 @@
-var Schema = require("./../Schema");
+var Schema = require('./../Schema');
 
 function BuildController(mongoose){
 
