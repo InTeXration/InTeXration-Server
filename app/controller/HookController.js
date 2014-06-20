@@ -19,14 +19,15 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                     res.json({"message": "WebHook Setup Successful"});
                 }else{
                     var Blueprint = mongoose.model('Blueprint', Schema.blueprintSchema);
-                    var blueprint = new Blueprint({
+                    var bp = {
                         "owner": data.repository.owner.name,
                         "repo": data.repository.name,
                         "url": data.repository.url,
                         "pusher": data.pusher.name,
                         "message": data.head_commit.message,
                         "timestamp": Date.now()
-                    });
+                    };
+                    var blueprint = new Blueprint(bp);
                     blueprint.save(function(err){
                         if(err){
                             res.status(500);
@@ -35,7 +36,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                             tmp.dir(function(err, path) {
                                 if(err) console.log(err);
                                 else {
-                                    var repoBuilder = new RepoBuilder(blueprint, path);
+                                    var repoBuilder = new RepoBuilder(bp, path);
                                     repoBuilder.build().then(function(b){
                                         var Build = mongoose.model('Build', Schema.buildSchema);
                                         var build = Build(b);
