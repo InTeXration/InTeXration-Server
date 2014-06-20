@@ -112,7 +112,7 @@ function RepoBuilder(blueprint, directory){
 
         var make = function(document){
             var deferred = Q.defer();
-            path = p.join(CONFIG.storage, blueprint.owner, blueprint.repo, document.name);
+            var path = p.join(CONFIG.storage, blueprint.owner, blueprint.repo, document.name);
             mkdirp(path, function (err) {
                 var documentBuilder = new DocumentBuilder(document, directory, path);
                 documentBuilder.build().then(deferred.resolve, deferred.error);
