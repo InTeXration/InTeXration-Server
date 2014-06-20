@@ -4,10 +4,6 @@ var p = require('path'),
 
 function FileController(mongoose){
 
-    var addExtension = function(name, ext){
-        return name + '.' + ext;
-    };
-
     var serve = function(req, res, ext){
 
         var addExtension = function(name){
@@ -18,7 +14,7 @@ function FileController(mongoose){
         var repo = req.params.repo;
         var name = req.params.name;
         var file = addExtension(name);
-        var filePath = p.join(CONFIG.storage, owner, repo, file);
+        var filePath = p.join(CONFIG.storage, owner, repo, name, file);
         fs.exists(filePath, function(exists) {
             if (exists) res.status(200).sendfile(filePath);
             else res.status(404).json({message: "The Requested File Does Not Exist"})
