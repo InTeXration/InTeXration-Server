@@ -25,7 +25,7 @@ module.exports = {
         ]
     }),
     buildSchema: Schema({
-        build: {
+        blueprint: {
             owner: String,
             repo: String,
             url: String,
