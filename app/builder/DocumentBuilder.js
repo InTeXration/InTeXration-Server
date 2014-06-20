@@ -105,6 +105,7 @@ function DocumentBuilder(document, dir){
         ], function(pdf, log){
             return {
                 name: document.name,
+                timestamp: Date.now(),
                 files: [pdf, log]
             };
         }, console.error);

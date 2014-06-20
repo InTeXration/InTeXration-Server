@@ -7,9 +7,9 @@ var mongoose = require('mongoose');
 var CONFIG = require('config');
 
 var HookController = require('./app/controller/HookController');
-var BuildController = require('./app/controller/BuildController');
+var BlueprintController = require('./app/controller/BlueprintController');
 var FileController = require('./app/controller/FileController');
-var DocumentController = require('./app/controller/DocumentController');
+var BuildController = require('./app/controller/BuildController');
 
 mongoose.connect('mongodb://'+CONFIG.mongo.host+':'+CONFIG.mongo.port+'/'+CONFIG.mongo.db);
 
@@ -25,20 +25,20 @@ app.post('/hook/:key', function(req, res){
     hookController.post(req, res)
 });
 
+var blueprintController = new BlueprintController(mongoose);
+app.get('/blueprint',  function(req, res){
+    blueprintController.getAll(req, res);
+});
+app.get('/blueprint/:owner', function(req, res){
+    blueprintController.getByOwner(req, res);
+});
+app.get('/blueprint/:owner/:repo',  function(req, res){
+    blueprintController.getByRepo(req, res);
+});
+
 var buildController = new BuildController(mongoose);
 app.get('/build',  function(req, res){
     buildController.getAll(req, res);
-});
-app.get('/build/:owner', function(req, res){
-    buildController.getByOwner(req, res);
-});
-app.get('/build/:owner/:repo',  function(req, res){
-    buildController.getByRepo(req, res);
-});
-
-var documentController = new DocumentController(mongoose);
-app.get('/document',  function(req, res){
-    documentController.getAll(req, res);
 });
 
 var fileController = new FileController(mongoose);

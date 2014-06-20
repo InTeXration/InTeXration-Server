@@ -7,7 +7,7 @@ var _ = require('underscore'),
     DocumentBuilder = require('./DocumentBuilder'),
     CONFIG = require('config');
 
-function RepoBuilder(build, directory){
+function RepoBuilder(blueprint, directory){
 
     var CONFIG_FILE = '.intexration';
 
@@ -24,7 +24,7 @@ function RepoBuilder(build, directory){
 
     this.clone = function (callback) {
         var deferred = Q.defer();
-        var command = "git clone " + build.url + " " + directory;
+        var command = "git clone " + blueprint.url + " " + directory;
         exec(command, {"cwd": directory}, function (err) {
             if (err) deferred.reject(err);
             else deferred.resolve();
@@ -41,7 +41,7 @@ function RepoBuilder(build, directory){
                 var config = JSON.parse(data);
                 var documents = [];
                 _.each(config.documents, function(document) {
-                    document.build = build;
+                    document.build = blueprint;
                     documents.push(document)
                 });
                 deferred.resolve(documents);
@@ -72,7 +72,7 @@ function RepoBuilder(build, directory){
         var moveDoc = function(document){
             var deferred = Q.defer();
             var promises = [];
-            var dir = p.join(CONFIG.storage, build.owner, build.repo, document.name);
+            var dir = p.join(CONFIG.storage, blueprint.owner, blueprint.repo, document.name);
             document.files.forEach(function(file){
                 promises.push(moveFile(file,dir));
             });
@@ -112,7 +112,7 @@ function RepoBuilder(build, directory){
 
         var make = function(document){
             var deferred = Q.defer();
-            path = p.join(CONFIG.storage, build.owner, build.repo, document.name);
+            path = p.join(CONFIG.storage, blueprint.owner, blueprint.repo, document.name);
             mkdirp(path, function (err) {
                 var documentBuilder = new DocumentBuilder(document, directory, path);
                 documentBuilder.build().then(deferred.resolve, deferred.error);
@@ -138,7 +138,7 @@ function RepoBuilder(build, directory){
 
     this.makeBuild = function(documents){
         return {
-            buid: build,
+            blueprint: blueprint,
             timestamp: Date.now(),
             documents: documents
         };

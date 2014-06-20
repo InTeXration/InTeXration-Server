@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 module.exports = {
-    buildSchema: Schema({
+    blueprintSchema: Schema({
         owner: String,
         repo: String,
         url: String,
@@ -16,18 +16,36 @@ module.exports = {
     documentSchema: Schema({
         name: String,
         timestamp: { type : Date, default: Date.now },
+        files: [
+            {
+                type: String,
+                name: String,
+                dir: String
+            }
+        ]
+    }),
+    buildSchema: Schema({
         build: {
             owner: String,
             repo: String,
             url: String,
             pusher: String,
-            message: String,
-            timestamp: Date
+            message:String,
+            timestamp : { type : Date, default: Date.now }
         },
-        files: [{
-            type: String,
-            name: String,
-            dir: String
-        }]
+        timestamp : { type : Date, default: Date.now },
+        documents: [
+            {
+                name: String,
+                timestamp: { type: Date, default: Date.now },
+                files: [
+                    {
+                        type: String,
+                        name: String,
+                        dir: String
+                    }
+                ]
+            }
+        ]
     })
 };

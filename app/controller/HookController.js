@@ -18,8 +18,8 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                 if(data.zen){
                     res.json({"message": "WebHook Setup Successful"});
                 }else{
-                    var Build = mongoose.model('Build', Schema.buildSchema);
-                    var build = new Build({
+                    var Blueprint = mongoose.model('Blueprint', Schema.blueprintSchema);
+                    var blueprint = new Blueprint({
                         "owner": data.repository.owner.name,
                         "repo": data.repository.name,
                         "url": data.repository.url,
@@ -27,7 +27,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                         "message": data.head_commit.message,
                         "timestamp": Date.now()
                     });
-                    build.save(function(err){
+                    blueprint.save(function(err){
                         if(err){
                             res.status(500);
                             res.json({"message": err.message});
@@ -35,17 +35,19 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                             tmp.dir(function(err, path) {
                                 if(err) console.log(err);
                                 else {
-                                    var repoBuilder = new RepoBuilder(build, path);
-                                    repoBuilder.build().then(function(doc){
-                                        var Document = mongoose.model('Document', Schema.documentSchema);
-                                        var document = Document(doc);
-                                        document.save(function(err){
+                                    var repoBuilder = new RepoBuilder(blueprint, path);
+                                    repoBuilder.build().then(function(b){
+                                        console.log('--- build ---');
+                                        console.log(JSON.stringify(b));
+                                        var Build = mongoose.model('Build', Schema.buildSchema);
+                                        var build = Build(b);
+                                        build.save(function(err){
                                             console.error(err);
                                         });
                                     }, console.error);
                                 }
                             });
-                            res.json(build);
+                            res.json(blueprint);
                         }
                     });
                 }
