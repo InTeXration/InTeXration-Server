@@ -37,10 +37,10 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                                 else {
                                     var repoBuilder = new RepoBuilder(blueprint, path);
                                     repoBuilder.build().then(function(b){
-                                        console.log('--- build ---');
-                                        console.log(JSON.stringify(b));
                                         var Build = mongoose.model('Build', Schema.buildSchema);
                                         var build = Build(b);
+                                        console.log('--- Build ---');
+                                        console.log(JSON.stringify(build));
                                         build.save(function(err){
                                             console.error(err);
                                         });
