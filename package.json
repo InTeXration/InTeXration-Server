@@ -30,7 +30,6 @@
         "tmp": "0.0.23",
         "config": "0.4.36",
         "mkdirp": "0.5.0",
-        "passport": "0.2.0",
-        "passport-github": "0.1.5"
+        "winston": "0.7.3"
     }
 }

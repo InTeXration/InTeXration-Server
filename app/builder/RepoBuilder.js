@@ -5,24 +5,34 @@ var _ = require('underscore'),
     exec = require('child_process').exec,
     mkdirp = require('mkdirp'),
     DocumentBuilder = require('./DocumentBuilder'),
+    logger = require('../Logger');
     CONFIG = require('config');
 
 function RepoBuilder(blueprint, directory){
-
     var CONFIG_FILE = '.intexration';
+    var timestamp =  Date.now();
+
+    logger.info('Repository Builder (%s) created', timestamp, {blueprint: blueprint, dir: directory});
 
     this.build = function(){
         var deferred = Q.defer();
         this.clone()
-            .then(this.parse, console.error)
-            .then(this.makeDocuments, console.error)
-            .then(this.moveDocuments, console.error)
-            .then(this.makeBuild, console.error)
+            .then(this.parse, function(err){
+                logger.error('Repository Builder (%s): Clone Failed', timestamp, {error: err});
+            })
+            .then(this.makeDocuments, function(err){
+                logger.error('Repository Builder (%s): Make Documents Failed', timestamp, {error: err});
+            })
+            .then(this.moveDocuments, function(err){
+                logger.error('Repository Builder (%s): Move Documents Failed', timestamp, {error: err});
+            })
+            .then(this.makeBuild)
             .then(deferred.resolve, deferred.reject);
         return deferred.promise;
     };
 
     this.clone = function (callback) {
+        logger.info('Repository Builder (%s): Clone', timestamp);
         var deferred = Q.defer();
         var command = "git clone " + blueprint.url + " " + directory;
         exec(command, {"cwd": directory}, function (err) {
@@ -33,6 +43,7 @@ function RepoBuilder(blueprint, directory){
     };
 
     this.parse = function () {
+        logger.info('Repository Builder (%s): Parse', timestamp);
         var deferred = Q.defer();
         var file = p.join(directory, CONFIG_FILE);
         fs.readFile(file, 'utf8', function (err, data) {
@@ -51,8 +62,9 @@ function RepoBuilder(blueprint, directory){
     };
 
     this.moveDocuments = function(documents){
-        var deferred = Q.defer();
+        logger.info('Repository Builder (%s): Move Documents', timestamp, {documents: documents});
 
+        var deferred = Q.defer();
         var moveFile = function(file, dir){
             var deferred = Q.defer();
             if(file === null)
@@ -108,14 +120,19 @@ function RepoBuilder(blueprint, directory){
     };
 
     this.makeDocuments = function(documents) {
+        logger.info('Repository Builder (%s): Make Documents', timestamp, {documents: documents});
+
         var deferred = Q.defer();
 
         var make = function(document){
             var deferred = Q.defer();
             var path = p.join(CONFIG.storage, blueprint.owner, blueprint.repo, document.name);
             mkdirp(path, function (err) {
-                var documentBuilder = new DocumentBuilder(document, directory, path);
-                documentBuilder.build().then(deferred.resolve, deferred.error);
+                if (err) logger.error('Repository Builder (%s): Make Documents Failed', timestamp, {error: err});
+                else {
+                    var documentBuilder = new DocumentBuilder(document, directory, path);
+                    documentBuilder.build().then(deferred.resolve, deferred.error);
+                }
             });
             return deferred.promise;
 

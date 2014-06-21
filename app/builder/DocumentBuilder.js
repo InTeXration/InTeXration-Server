@@ -1,11 +1,14 @@
 var Q = require('q'),
     p = require('path'),
     fs = require('fs'),
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    logger = require('../Logger');
 
 function DocumentBuilder(document, dir){
-
     var directory = p.join(dir, document.dir);
+    var timestamp =  Date.now();
+
+    logger.info('Document Builder (%s) created', timestamp, {document: document, dir: dir});
 
     var makeFileNames = function(){
         var addExtension = function(name, ext){
@@ -38,42 +41,41 @@ function DocumentBuilder(document, dir){
     var fileNames = makeFileNames();
 
     this.build = function(){
-        console.info("Building started in " + directory);
         var deferred = Q.defer();
         this.makeLatex(null)
-            .then(this.makeBibtex, console.error)
-            .then(this.makeIndex, console.error)
-            .then(this.makeLatex, console.error)
-            .then(this.makeLatex, console.error)
-            .then(this.makeDocument, console.error)
+            .then(this.makeBibtex)
+            .then(this.makeIndex)
+            .then(this.makeLatex)
+            .then(this.makeLatex)
+            .then(this.makeDocument)
             .then(deferred.resolve, deferred.reject);
         return deferred.promise;
     };
 
     this.makeIndex = function(){
-        console.info("Make Index");
+        logger.info('Document Builder (%s): Make Index', timestamp, {file: fileNames.idx});
         var deferred = Q.defer();
         var command = "makeindex " + fileNames.idx;
         exec(command, {"cwd": directory}, function(err){
-            if (err) console.warn(err);
+            if (err) logger.warn('Document Builder (%s): Make Intex Failed', timestamp, {error: err})
             deferred.resolve();
         });
         return deferred.promise;
     };
 
     this.makeBibtex = function(){
-        console.info("Make BibTex");
+        logger.info('Document Builder (%s): Make BibTex', timestamp, {file: fileNames.bib});
         var deferred = Q.defer();
         var command = "bibtex " + fileNames.bib;
         exec(command, {"cwd": directory}, function(err){
-            if (err) console.warn(err);
+            if (err) logger.warn('Document Builder (%s): Make BibTex Failed', timestamp, {error: err})
             deferred.resolve();
         });
         return deferred.promise;
     };
 
     this.makeLatex = function(){
-        console.info("Make Latex");
+        logger.info('Document Builder (%s): Make Latex', timestamp, {file: fileNames.tex});
         var deferred = Q.defer();
         var command = "pdflatex -interaction=nonstopmode " + fileNames.tex;
         exec(command, {"cwd": directory}, function(err){
@@ -84,7 +86,6 @@ function DocumentBuilder(document, dir){
     };
 
     this.makeDocument = function(){
-        console.info("Make Files");
         var makeFile = function(type){
             var deferred = Q.defer();
             var name = fileNames[type];
@@ -108,7 +109,9 @@ function DocumentBuilder(document, dir){
                 timestamp: Date.now(),
                 files: [pdf, log]
             };
-        }, console.error);
+        }, function(err){
+            logger.info('Document Builder (%s): File Creation Failed', timestamp, {error: err});
+        });
     };
 }
 
