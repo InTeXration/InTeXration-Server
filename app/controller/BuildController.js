@@ -1,9 +1,31 @@
-var Schema = require('./../Schema');
+var _ = require('underscore'),
+    Schema = require('./../Schema'),
+    CONFIG = require('config');
 
 function BuildController(mongoose){
 
     var convert = function(build){
-        return build
+
+        var makeUrl = function(owner, repo, name, type){
+            return CONFIG.url + '/file/' + owner + '/' + repo + '/' + name + '/' + type;
+        };
+
+        var documents = []
+        
+        _.each(build.documents, function (document) {
+            var files = [];
+            _.each(build.document.files, function(file){
+                files.push({
+                    type: file.type,
+                    name: file.name,
+                    url: makeUrl(build.blueprint.owner, build.blueprint.repo, build.documents.name, file.type)
+                });
+            });
+            document.files = files;
+            documents.push(document);
+        });
+        build.documents = documents;
+        return build;
     };
 
     this.get = function (req, res) {
