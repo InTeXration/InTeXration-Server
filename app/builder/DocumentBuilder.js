@@ -53,18 +53,18 @@ function DocumentBuilder(document, dir){
     };
 
     this.makeIndex = function(){
-        logger.info('Document Builder (%s): Make Index', timestamp, {file: fileNames.idx});
+        logger.debug('Document Builder (%s): Make Index', timestamp, {file: fileNames.idx});
         var deferred = Q.defer();
         var command = "makeindex " + fileNames.idx;
         exec(command, {"cwd": directory}, function(err){
-            if (err) logger.warn('Document Builder (%s): Make Intex Failed', timestamp, {error: err})
+            if (err) logger.warn('Document Builder (%s): Make Index Failed', timestamp, {error: err})
             deferred.resolve();
         });
         return deferred.promise;
     };
 
     this.makeBibtex = function(){
-        logger.info('Document Builder (%s): Make BibTex', timestamp, {file: fileNames.bib});
+        logger.debug('Document Builder (%s): Make BibTex', timestamp, {file: fileNames.bib});
         var deferred = Q.defer();
         var command = "bibtex " + fileNames.bib;
         exec(command, {"cwd": directory}, function(err){
@@ -75,7 +75,7 @@ function DocumentBuilder(document, dir){
     };
 
     this.makeLatex = function(){
-        logger.info('Document Builder (%s): Make Latex', timestamp, {file: fileNames.tex});
+        logger.debug('Document Builder (%s): Make Latex', timestamp, {file: fileNames.tex});
         var deferred = Q.defer();
         var command = "pdflatex -interaction=nonstopmode " + fileNames.tex;
         exec(command, {"cwd": directory}, function(err){
@@ -110,7 +110,7 @@ function DocumentBuilder(document, dir){
                 files: [pdf, log]
             };
         }, function(err){
-            logger.info('Document Builder (%s): File Creation Failed', timestamp, {error: err});
+            logger.error('Document Builder (%s): File Creation Failed', timestamp, {error: err});
         });
     };
 }

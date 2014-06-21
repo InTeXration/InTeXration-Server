@@ -32,7 +32,7 @@ function RepoBuilder(blueprint, directory){
     };
 
     this.clone = function (callback) {
-        logger.info('Repository Builder (%s): Clone', timestamp);
+        logger.debug('Repository Builder (%s): Clone', timestamp);
         var deferred = Q.defer();
         var command = "git clone " + blueprint.url + " " + directory;
         exec(command, {"cwd": directory}, function (err) {
@@ -43,7 +43,7 @@ function RepoBuilder(blueprint, directory){
     };
 
     this.parse = function () {
-        logger.info('Repository Builder (%s): Parse', timestamp);
+        logger.debug('Repository Builder (%s): Parse', timestamp);
         var deferred = Q.defer();
         var file = p.join(directory, CONFIG_FILE);
         fs.readFile(file, 'utf8', function (err, data) {
@@ -62,8 +62,7 @@ function RepoBuilder(blueprint, directory){
     };
 
     this.moveDocuments = function(documents){
-        logger.info('Repository Builder (%s): Move Documents', timestamp, {documents: documents});
-
+        logger.debug('Repository Builder (%s): Move Documents', timestamp, {documents: documents});
         var deferred = Q.defer();
         var moveFile = function(file, dir){
             var deferred = Q.defer();
@@ -120,7 +119,7 @@ function RepoBuilder(blueprint, directory){
     };
 
     this.makeDocuments = function(documents) {
-        logger.info('Repository Builder (%s): Make Documents', timestamp, {documents: documents});
+        logger.debug('Repository Builder (%s): Make Documents', timestamp, {documents: documents});
 
         var deferred = Q.defer();
 
