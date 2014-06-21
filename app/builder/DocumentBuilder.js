@@ -80,7 +80,7 @@ function DocumentBuilder(document, dir){
         var command = "pdflatex -interaction=nonstopmode " + fileNames.tex;
         exec(command, {"cwd": directory}, function(err){
             if (err) logger.error('Document Builder (%s): Make Latex Failed', timestamp, {error: err});
-            else deferred.resolve();
+            deferred.resolve();
         });
         return deferred.promise;
     };
