@@ -28,7 +28,7 @@ function FileController(mongoose) {
         var name = req.params.name;
 
         path(owner, repo, name, type).then(function(path){
-            if (exists) res.status(200).sendfile(path);
+            res.status(200).sendfile(path);
         }, function(err){
             res.status(404).json({message: err.message})
         });
