@@ -7,6 +7,8 @@ var p = require('path'),
 function FileController(mongoose) {
 
     var logParser = new LogParser();
+    var LOG = 'log';
+    var PDF = 'pdf';
 
     var path = function(owner, repo, name, type){
         var deferred = Q.defer();
@@ -35,16 +37,16 @@ function FileController(mongoose) {
     };
 
     this.getPdf = function (req, res) {
-        serve(req, res, 'pdf');
+        serve(req, res, PDF);
     };
 
     this.getLog = function (req, res) {
-        serve(req, res, 'log');
+        serve(req, res, LOG);
     };
 
     this.getData = function (req, res) {
 
-        path(req.params.owner, req.params.repo, req.params.name).then(logParser.parse).then(function(data){
+        path(req.params.owner, req.params.repo, req.params.name, LOG).then(logParser.parse).then(function(data){
             res.status(200).json(data);
         }, function(err){
             res.status(404).json({message: err.message})
