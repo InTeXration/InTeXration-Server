@@ -16,7 +16,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
         }
     };
 
-    var buildRepo = function(blueprint){
+    var buildRepo = function(blueprint, res){
         tmp.dir(function(err, path) {
             if(err) abort('Unable to create temp dir', 500, err, res);
             else {
@@ -59,7 +59,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                     blueprint.save(function(err){
                         if(err) abort('Unable to store blueprint', 500, err, res);
                         else{
-                            buildRepo(bp);
+                            buildRepo(bp, res);
                         }
                     });
                 }
