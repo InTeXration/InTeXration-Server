@@ -155,7 +155,7 @@ function RepoBuilder(blueprint, directory){
     this.makeBuild = function(documents){
         return {
             blueprint: blueprint,
-            timestamp: Date.now(),
+            timestamp: timestamp,
             documents: documents
         };
     }
