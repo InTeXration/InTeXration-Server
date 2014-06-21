@@ -1,6 +1,6 @@
 var Schema = require('./../Schema');
 
-function BuildController(mongoose){
+function BlueprintController(mongoose){
 
     this.getAll = function (req, res) {
         var Blueprint = mongoose.model('Blueprint', Schema.blueprintSchema);
@@ -10,18 +10,18 @@ function BuildController(mongoose){
     };
 
     this.getByOwner = function (req, res) {
-        var Build = mongoose.model('Blueprint', Schema.blueprintSchema);
-        Build.find({"owner": req.params.owner}, function(err, blueprints){
+        var Blueprint = mongoose.model('Blueprint', Schema.blueprintSchema);
+        Blueprint.find({"owner": req.params.owner}, function(err, blueprints){
             res.json(blueprints);
         });
     };
 
     this.getByRepo = function (req, res) {
-        var Build = mongoose.model('Blueprint', Schema.blueprintSchema);
-        Build.find({"owner": req.params.owner, "repo": req.params.repo}, function(err, blueprints){
+        var Blueprint = mongoose.model('Blueprint', Schema.blueprintSchema);
+        Blueprint.find({"owner": req.params.owner, "repo": req.params.repo}, function(err, blueprints){
             res.json(blueprints);
         });
     }
 }
 
-module.exports = BuildController;
+module.exports = BlueprintController;
