@@ -1,0 +1,10 @@
+{
+    "storage": {
+        "path": "./public/"
+    },
+    "mongo": {
+        "host": "localhost",
+        "port": "27017",
+        "db": "intexration"
+    }
+}
