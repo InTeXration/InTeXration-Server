@@ -5,27 +5,27 @@ var _ = require('underscore'),
 function BuildController(mongoose){
 
     var convert = function(build){
-
+        var newBuild = build;
         var makeUrl = function(owner, repo, name, type){
             return CONFIG.url + '/file/' + owner + '/' + repo + '/' + name + '/' + type;
         };
 
-        var documents = []
+        var documents = [];
         
         _.each(build.documents, function (document) {
             var files = [];
+            var newDocument = document;
             _.each(document.files, function(file){
                 files.push({
                     type: file.type,
-                    name: file.name,
                     url: makeUrl(build.blueprint.owner, build.blueprint.repo, build.documents.name, file.type)
                 });
             });
-            document.files = files;
-            documents.push(document);
+            newDocument.files = files;
+            documents.push(newDocument);
         });
-        build.documents = documents;
-        return build;
+        newBuild.documents = documents;
+        return newBuild;
     };
 
     this.get = function (req, res) {
