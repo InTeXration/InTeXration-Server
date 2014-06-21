@@ -72,7 +72,7 @@ function RepoBuilder(blueprint, directory){
             var oldPath = p.join(file.path, file.name);
             var newPath = p.join(CONFIG.storage, dir, file.name);
             fs.rename(oldPath, newPath, function(err){
-                if (err) deferred.reject(err);
+                if (err) deferred.resolve(null);
                 else {
                     file.path = dir;
                     deferred.resolve(file);
@@ -92,7 +92,8 @@ function RepoBuilder(blueprint, directory){
                 var newFiles = [];
                 results.forEach(function (result) {
                     if (result.state === "fulfilled") {
-                        newFiles.push(result.value);
+                        var file = result.value;
+                        if(file !== null) newFiles.push(file);
                     }
                 });
                 deferred.resolve({
