@@ -1,6 +1,6 @@
 var p = require('path'),
     fs = require('fs'),
-    LogParser = require('../LogParser'),
+    LogParser = require('../common/LogParser'),
     CONFIG = require('config');
 
 function FileController(mongoose) {
