@@ -69,7 +69,7 @@ function RepoBuilder(blueprint, directory){
             var deferred = Q.defer();
             if(file === null)
                 deferred.reject(new Error("Cannot move: file is null."));
-            var oldPath = p.join(file.dir, file.name);
+            var oldPath = p.join(file.path, file.name);
             var newPath = p.join(CONFIG.storage, dir, file.name);
             fs.rename(oldPath, newPath, function(err){
                 if (err) deferred.reject(err);
