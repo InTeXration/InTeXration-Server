@@ -9,13 +9,40 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
     var mongoose = mongoose;
     var apiKeyManager = new ApiKeyManager(mongoose);
 
-    this.post = function (req, res, next) {
+    var abort = function(code, message, err, res){
+        if(err){
+            logger.error('HookController: %s', message, {error: err});
+            res.status(code).json({"message": message});
+        }
+    };
+
+    var buildRepo = function(blueprint){
+        tmp.dir(function(err, path) {
+            if(err) abort('Unable to create temp dir', 500, err, res);
+            else {
+                var repoBuilder = new RepoBuilder(blueprint, path);
+                repoBuilder.build().then(function(b){
+                    var Build = mongoose.model('Build', Schema.buildSchema);
+                    var build = Build(b);
+                    build.save(function(err){
+                        if(err) abort('Unable to store build', 500, err, res);
+                        else {
+                            // TODO: Do not return paths!
+                            res.json(b);
+                        }
+                    });
+                }, function(err){
+                    if(err) abort('Unable to build repository', 500, err, res);
+                });
+            }
+        });
+    };
+
+    this.post = function (req, res) {
         var data = req.body;
         apiKeyManager.validate(req.params.key, function(err){
-            if(err){
-                res.status(401);
-                res.json({"message": err.message});
-            }else{
+            if(err) abort('Invalid API Key', 401, err, res);
+            else{
                 if(data.zen){
                     res.json({"message": "WebHook Setup Successful"});
                 }else{
@@ -30,30 +57,9 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                     };
                     var blueprint = new Blueprint(bp);
                     blueprint.save(function(err){
-                        if(err){
-                            logger.error('HookController: Unable to store blueprint', {error: err});
-                            res.status(500).json({"message": err.message});
-                        }else{
-                            tmp.dir(function(err, path) {
-                                if(err){
-                                    logger.error('HookController: Unable to create temp dir', {error: err});
-                                    res.status(500).json({"message": err.message});
-                                }
-                                else {
-                                    var repoBuilder = new RepoBuilder(bp, path);
-                                    repoBuilder.build().then(function(b){
-                                        var Build = mongoose.model('Build', Schema.buildSchema);
-                                        var build = Build(b);
-                                        build.save(function(err){
-                                            logger.error('HookController: Unable to store build', {error: err});
-                                        });
-                                        res.json(b);
-                                    }, function(err){
-                                        logger.error('HookController: Unable to build repository', {error: err});
-                                        res.status(500).json({"message": err.message});
-                                    });
-                                }
-                            });
+                        if(err) abort('Unable to store blueprint', 500, err, res);
+                        else{
+                            buildRepo(bp);
                         }
                     });
                 }
