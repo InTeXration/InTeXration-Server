@@ -19,7 +19,7 @@ function LogParser(){
                 item = '';
             }
             if(line.indexOf(pattern) > -1 || item !== ''){
-                item = item.concat(line);
+                item = item.concat(line.concat(NEWLINE));
             }
         }
         return results;
