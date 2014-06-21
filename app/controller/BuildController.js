@@ -14,7 +14,7 @@ function BuildController(mongoose){
         
         _.each(build.documents, function (document) {
             var files = [];
-            _.each(build.document.files, function(file){
+            _.each(document.files, function(file){
                 files.push({
                     type: file.type,
                     name: file.name,
