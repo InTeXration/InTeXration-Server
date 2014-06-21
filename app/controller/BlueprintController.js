@@ -1,4 +1,4 @@
-var Schema = require('./../Schema');
+var Schema = require('./../common/Schema');
 
 function BlueprintController(mongoose){
 

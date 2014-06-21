@@ -1,12 +1,11 @@
 var RepoBuilder = require('./../builder/RepoBuilder'),
-    Schema = require('./../Schema'),
+    Schema = require('./../common/Schema'),
     ApiKeyManager = require('./../manager/ApiKeyManager'),
-    logger = require('../Logger'),
+    logger = require('../common/Logger'),
     tmp = require('tmp');
 
     function HookController(mongoose){
 
-    var mongoose = mongoose;
     var apiKeyManager = new ApiKeyManager(mongoose);
 
     var abort = function(code, message, err, res){
@@ -17,7 +16,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
     };
 
     var buildRepo = function(blueprint, res){
-        tmp.dir(function(err, path) {
+        tmp.dir({prefix: 'intexration-'}, function(err, path) {
             if(err) abort('Unable to create temp dir', 500, err, res);
             else {
                 var repoBuilder = new RepoBuilder(blueprint, path);
@@ -43,7 +42,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
         apiKeyManager.validate(req.params.key, function(err){
             if(err) abort('Invalid API Key', 401, err, res);
             else{
-                if(data.zen){
+                if(data.hasOwnProperty('zen')){
                     res.json({"message": "WebHook Setup Successful"});
                 }else{
                     var Blueprint = mongoose.model('Blueprint', Schema.blueprintSchema);

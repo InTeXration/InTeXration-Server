@@ -2,7 +2,7 @@ var Q = require('q'),
     p = require('path'),
     fs = require('fs'),
     exec = require('child_process').exec,
-    logger = require('../Logger');
+    logger = require('../common/Logger');
 
 function DocumentBuilder(document, dir){
     var directory = p.join(dir, document.dir);

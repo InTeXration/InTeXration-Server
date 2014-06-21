@@ -5,7 +5,7 @@ var _ = require('underscore'),
     exec = require('child_process').exec,
     mkdirp = require('mkdirp'),
     DocumentBuilder = require('./DocumentBuilder'),
-    logger = require('../Logger'),
+    logger = require('../common/Logger'),
     CONFIG = require('config');
 
 function RepoBuilder(blueprint, directory){
@@ -104,7 +104,7 @@ function RepoBuilder(blueprint, directory){
             if(file === null)
                 deferred.reject(new Error("Cannot move: file is null."));
             var oldPath = p.join(file.path, file.name);
-            var newPath = p.join(CONFIG.storage, dir, file.name);
+            var newPath = p.join(CONFIG.storage.path, dir, file.name);
             fs.rename(oldPath, newPath, function(err){
                 if (err) {
                     logger.error('Repository Builder (%s): Unable to move file', timestamp, {oldPath: oldPath, newPath:newPath});

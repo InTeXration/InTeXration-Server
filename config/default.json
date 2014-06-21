@@ -1,6 +1,7 @@
 {
-    "url": "http://intexration.com/",
-    "storage": "./public/",
+    "storage": {
+        "path": "./public/"
+    },
     "mongo": {
         "host": "localhost",
         "port": "27017",

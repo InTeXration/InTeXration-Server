@@ -1,5 +1,5 @@
 var _ = require('underscore'),
-    Schema = require('./../Schema');
+    Schema = require('./../common/Schema');
 
 function BuildController(mongoose){
 
