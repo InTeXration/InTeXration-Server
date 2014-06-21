@@ -49,6 +49,10 @@ app.get('/file/:owner/:repo/:name/pdf', function(req, res){
 app.get('/file/:owner/:repo/:name/log', function(req, res){
     fileController.getLog(req, res);
 });
+app.get('/file/:owner/:repo/:name/data', function(req, res){
+    fileController.getData(req, res);
+});
+
 
 app.get('*', function(req, res){
     res.json({"message": "To be replaced with Front-End"});
