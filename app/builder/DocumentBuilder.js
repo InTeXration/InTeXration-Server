@@ -104,13 +104,14 @@ function DocumentBuilder(document, dir){
             makeFile('pdf'),
             makeFile('log')
         ], function(pdf, log){
+            var files = [];
+            if(pdf !== null) files.push(pdf);
+            if(log !== null) files.push(log);
             return {
                 name: document.name,
                 timestamp: Date.now(),
-                files: [pdf, log]
+                files: files
             };
-        }, function(err){
-            logger.error('Document Builder (%s): File Creation Failed', timestamp, {error: err});
         });
     };
 }
