@@ -37,8 +37,8 @@ app.get('/blueprint/:owner/:repo',  function(req, res){
 });
 
 var buildController = new BuildController(mongoose);
-app.get('/build',  function(req, res){
-    buildController.getAll(req, res);
+app.get('/build/:owner/:repo',  function(req, res){
+    buildController.get(req, res);
 });
 
 var fileController = new FileController(mongoose);
