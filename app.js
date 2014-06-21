@@ -29,14 +29,15 @@ var blueprintController = new BlueprintController(mongoose);
 app.get('/blueprint',  function(req, res){
     blueprintController.getAll(req, res);
 });
-app.get('/blueprint/:owner', function(req, res){
-    blueprintController.getByOwner(req, res);
-});
 app.get('/blueprint/:owner/:repo',  function(req, res){
-    blueprintController.getByRepo(req, res);
+    blueprintController.get(req, res);
 });
 
 var buildController = new BuildController(mongoose);
+app.get('/build',  function(req, res){
+    buildController.getAll(req, res);
+});
+
 app.get('/build/:owner/:repo',  function(req, res){
     buildController.get(req, res);
 });
