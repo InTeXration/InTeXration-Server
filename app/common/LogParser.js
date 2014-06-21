@@ -6,6 +6,7 @@ function LogParser(){
 
     var ERROR = '!';
     var WARNINGS = 'Warning';
+    var NEWLINE = '\n'
 
     var find = function(lines, pattern){
         var results = [];
@@ -30,7 +31,7 @@ function LogParser(){
                 logger.error('Log Parser: Cannot open file', {file:path});
                 deferred.reject(err);
             }else {
-                var lines = data.split("\r\n");
+                var lines = data.split(NEWLINE);
                 var errors = find(lines, ERROR);
                 var warnings = find(lines, WARNINGS);
                 deferred.resolve({
