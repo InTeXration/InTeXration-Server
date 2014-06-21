@@ -1,4 +1,5 @@
 var p = require('path'),
+    Q = require('q'),
     fs = require('fs'),
     LogParser = require('../common/LogParser'),
     CONFIG = require('config');
