@@ -1,6 +1,7 @@
 var RepoBuilder = require('./../builder/RepoBuilder'),
-    Schema = require('./../Schema');
+    Schema = require('./../Schema'),
     ApiKeyManager = require('./../manager/ApiKeyManager'),
+    logger = require('../Logger'),
     tmp = require('tmp');
 
     function HookController(mongoose){
@@ -30,25 +31,29 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                     var blueprint = new Blueprint(bp);
                     blueprint.save(function(err){
                         if(err){
-                            res.status(500);
-                            res.json({"message": err.message});
+                            logger.error('HookController: Unable to store blueprint', {error: err});
+                            res.status(500).json({"message": err.message});
                         }else{
                             tmp.dir(function(err, path) {
-                                if(err) console.log(err);
+                                if(err){
+                                    logger.error('HookController: Unable to create temp dir', {error: err});
+                                    res.status(500).json({"message": err.message});
+                                }
                                 else {
                                     var repoBuilder = new RepoBuilder(bp, path);
                                     repoBuilder.build().then(function(b){
                                         var Build = mongoose.model('Build', Schema.buildSchema);
                                         var build = Build(b);
-                                        console.log('--- Build ---');
-                                        console.log(JSON.stringify(build));
                                         build.save(function(err){
-                                            console.error(err);
+                                            logger.error('HookController: Unable to store build', {error: err});
                                         });
-                                    }, console.error);
+                                        res.json(b);
+                                    }, function(err){
+                                        logger.error('HookController: Unable to build repository', {error: err});
+                                        res.status(500).json({"message": err.message});
+                                    });
                                 }
                             });
-                            res.json(blueprint);
                         }
                     });
                 }
