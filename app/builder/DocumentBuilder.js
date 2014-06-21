@@ -57,7 +57,7 @@ function DocumentBuilder(document, dir){
         var deferred = Q.defer();
         var command = "makeindex " + fileNames.idx;
         exec(command, {"cwd": directory}, function(err){
-            if (err) logger.warn('Document Builder (%s): Make Index Failed', timestamp, {error: err})
+            if (err) logger.warn('Document Builder (%s): Make Index Failed', timestamp, {error: err});
             deferred.resolve();
         });
         return deferred.promise;
@@ -68,7 +68,7 @@ function DocumentBuilder(document, dir){
         var deferred = Q.defer();
         var command = "bibtex " + fileNames.bib;
         exec(command, {"cwd": directory}, function(err){
-            if (err) logger.warn('Document Builder (%s): Make BibTex Failed', timestamp, {error: err})
+            if (err) logger.warn('Document Builder (%s): Make BibTex Failed', timestamp, {error: err});
             deferred.resolve();
         });
         return deferred.promise;
@@ -79,7 +79,7 @@ function DocumentBuilder(document, dir){
         var deferred = Q.defer();
         var command = "pdflatex -interaction=nonstopmode " + fileNames.tex;
         exec(command, {"cwd": directory}, function(err){
-            if (err) deferred.reject(err);
+            if (err) logger.error('Document Builder (%s): Make Latex Failed', timestamp, {error: err});
             else deferred.resolve();
         });
         return deferred.promise;
