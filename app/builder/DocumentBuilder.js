@@ -80,19 +80,22 @@ function DocumentBuilder(document, dir){
         var command = "pdflatex -interaction=nonstopmode " + fileNames.tex;
         exec(command, {"cwd": directory}, function(err){
             if (err) logger.error('Document Builder (%s): Make Latex Failed', timestamp, {error: err});
-            else deferred.resolve();
+            deferred.resolve();
         });
         return deferred.promise;
     };
 
     this.makeDocument = function(){
+        logger.debug('Document Builder (%s): Make Document', timestamp);
         var makeFile = function(type){
             var deferred = Q.defer();
             var name = fileNames[type];
             var path = directory;
             fs.exists(p.join(path, name), function(exists){
-                if (!exists)  deferred.resolve(null);
-                else deferred.resolve({
+                if (!exists) {
+                    logger.error('Document Builder (%s): File does not exist', timestamp, {file:name});
+                    deferred.resolve(null);
+                }else deferred.resolve({
                     type: type,
                     name: name,
                     path: path

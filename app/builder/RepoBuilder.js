@@ -62,6 +62,40 @@ function RepoBuilder(blueprint, directory){
         return deferred.promise;
     };
 
+    this.makeDocuments = function(documents) {
+        logger.debug('Repository Builder (%s): Make Documents', timestamp, {documents: documents});
+
+        var deferred = Q.defer();
+
+        var make = function(document){
+            var deferred = Q.defer();
+            var path = p.join(blueprint.owner, blueprint.repo, document.name);
+            mkdirp(path, function (err) {
+                if (err) logger.error('Repository Builder (%s): Make Documents Failed', timestamp, {error: err});
+                else {
+                    var documentBuilder = new DocumentBuilder(document, directory, path);
+                    documentBuilder.build().then(deferred.resolve, deferred.error);
+                }
+            });
+            return deferred.promise;
+
+        };
+        var promises = [];
+        documents.forEach(function (document) {
+            promises.push(make(document));
+        });
+        Q.allSettled(promises).then(function(results){
+            var newDocuments = [];
+            results.forEach(function (result) {
+                if (result.state === "fulfilled") {
+                    newDocuments.push(result.value);
+                }
+            });
+            deferred.resolve(newDocuments);
+        });
+        return deferred.promise;
+    };
+
     this.moveDocuments = function(documents){
         logger.debug('Repository Builder (%s): Move Documents', timestamp, {documents: documents});
         var deferred = Q.defer();
@@ -72,8 +106,10 @@ function RepoBuilder(blueprint, directory){
             var oldPath = p.join(file.path, file.name);
             var newPath = p.join(CONFIG.storage, dir, file.name);
             fs.rename(oldPath, newPath, function(err){
-                if (err) deferred.resolve(null);
-                else {
+                if (err) {
+                    logger.error('Repository Builder (%s): Unable to move file', timestamp, {oldPath: oldPath, newPath:newPath});
+                    deferred.resolve(null);
+                }else {
                     file.path = dir;
                     deferred.resolve(file);
                 }
@@ -120,47 +156,13 @@ function RepoBuilder(blueprint, directory){
         return deferred.promise;
     };
 
-    this.makeDocuments = function(documents) {
-        logger.debug('Repository Builder (%s): Make Documents', timestamp, {documents: documents});
-
-        var deferred = Q.defer();
-
-        var make = function(document){
-            var deferred = Q.defer();
-            var path = p.join(blueprint.owner, blueprint.repo, document.name);
-            mkdirp(path, function (err) {
-                if (err) logger.error('Repository Builder (%s): Make Documents Failed', timestamp, {error: err});
-                else {
-                    var documentBuilder = new DocumentBuilder(document, directory, path);
-                    documentBuilder.build().then(deferred.resolve, deferred.error);
-                }
-            });
-            return deferred.promise;
-
-        };
-        var promises = [];
-        documents.forEach(function (document) {
-            promises.push(make(document));
-        });
-        Q.allSettled(promises).then(function(results){
-            var newDocuments = [];
-            results.forEach(function (result) {
-                if (result.state === "fulfilled") {
-                    newDocuments.push(result.value);
-                }
-            });
-            deferred.resolve(newDocuments);
-        });
-        return deferred.promise;
-    };
-
     this.makeBuild = function(documents){
         return {
             blueprint: blueprint,
             timestamp: timestamp,
             documents: documents
         };
-    }
+    };
 }
 
 module.exports = RepoBuilder;
