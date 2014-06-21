@@ -25,10 +25,10 @@ function LogParser(){
 
     this.parse = function(path){
         var deferred = Q.defer();
-        fs.readFile(path, 'utf8', function (err,data){
+        fs.readFile(path, 'utf8', function (err, data){
             if(err){
                 logger.error('Log Parser: Cannot open file', {file:path});
-                deferred.resolve(err);
+                deferred.reject(err);
             }else {
                 var lines = data.split("\r\n");
                 var errors = find(lines, ERROR);
