@@ -95,7 +95,7 @@ function DocumentBuilder(document, dir){
                 else deferred.resolve({
                     type: type,
                     name: name,
-                    dir: path
+                    path: path
                 });
             });
             return deferred.promise;

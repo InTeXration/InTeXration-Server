@@ -4,35 +4,11 @@ var _ = require('underscore'),
 
 function BuildController(mongoose){
 
-    var convert = function(build){
-        var newBuild = build;
-        var makeUrl = function(owner, repo, name, type){
-            return CONFIG.url + '/file/' + owner + '/' + repo + '/' + name + '/' + type;
-        };
-
-        var documents = [];
-        
-        _.each(build.documents, function (document) {
-            var files = [];
-            var newDocument = document;
-            _.each(document.files, function(file){
-                files.push({
-                    type: file.type,
-                    url: makeUrl(build.blueprint.owner, build.blueprint.repo, build.documents.name, file.type)
-                });
-            });
-            newDocument.files = files;
-            documents.push(newDocument);
-        });
-        newBuild.documents = documents;
-        return newBuild;
-    };
-
     this.get = function (req, res) {
         var Build = mongoose.model('Build', Schema.buildSchema);
         Build.findOne({"blueprint.owner": req.params.owner, "blueprint.repo": req.params.repo}, {}, { sort: { 'created_at' : 1 } }, function(err, build){
             if(err || build === null) res.status(404).json({message: 'No build found'});
-            else res.json(convert(build));
+            else res.json(build);
         });
     };
 }

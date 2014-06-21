@@ -5,10 +5,11 @@ var _ = require('underscore'),
     exec = require('child_process').exec,
     mkdirp = require('mkdirp'),
     DocumentBuilder = require('./DocumentBuilder'),
-    logger = require('../Logger');
+    logger = require('../Logger'),
     CONFIG = require('config');
 
 function RepoBuilder(blueprint, directory){
+
     var CONFIG_FILE = '.intexration';
     var timestamp =  Date.now();
 
@@ -69,11 +70,11 @@ function RepoBuilder(blueprint, directory){
             if(file === null)
                 deferred.reject(new Error("Cannot move: file is null."));
             var oldPath = p.join(file.dir, file.name);
-            var newPath = p.join(dir, file.name);
+            var newPath = p.join(CONFIG.storage, dir, file.name);
             fs.rename(oldPath, newPath, function(err){
                 if (err) deferred.reject(err);
                 else {
-                    file.dir = dir;
+                    file.path = dir;
                     deferred.resolve(file);
                 }
             });
@@ -83,7 +84,7 @@ function RepoBuilder(blueprint, directory){
         var moveDoc = function(document){
             var deferred = Q.defer();
             var promises = [];
-            var dir = p.join(CONFIG.storage, blueprint.owner, blueprint.repo, document.name);
+            var dir = p.join(blueprint.owner, blueprint.repo, document.name);
             document.files.forEach(function(file){
                 promises.push(moveFile(file,dir));
             });
@@ -125,7 +126,7 @@ function RepoBuilder(blueprint, directory){
 
         var make = function(document){
             var deferred = Q.defer();
-            var path = p.join(CONFIG.storage, blueprint.owner, blueprint.repo, document.name);
+            var path = p.join(blueprint.owner, blueprint.repo, document.name);
             mkdirp(path, function (err) {
                 if (err) logger.error('Repository Builder (%s): Make Documents Failed', timestamp, {error: err});
                 else {

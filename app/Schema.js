@@ -31,7 +31,7 @@ module.exports = {
                     {
                         type: { type: String },
                         name: String,
-                        dir: String
+                        path: String
                     }
                 ]
             }
