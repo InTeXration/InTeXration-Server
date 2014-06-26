@@ -24,11 +24,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                         });
                     }catch (e){
                         logger.error(e);
-                        var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
-                            .replace(/^\s+at\s+/gm, '')
-                            .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
-                            .split('\n');
-                        console.log(stack);
+                        console.log(e.stack);
                     }
                 }, function(err){
                     if(err) logger.error('HookController: %s', 'Unable to build repository', {error: err});
@@ -52,7 +48,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                         repo: data.repository.name,
                         url: data.repository.url,
                         pusher: data.pusher.name,
-                        message: data.head_commit.message,
+                        message: data.head_commit.message
                     };
                     var hook = new Hook(hk);
                     Hook.create(hk, function(err, hook){

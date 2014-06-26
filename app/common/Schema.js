@@ -29,7 +29,7 @@ module.exports = {
                 repo: String,
                 url: String,
                 pusher: String,
-                message:String,
+                message:String
             },
             documents: [
                 {
