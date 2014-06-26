@@ -24,6 +24,11 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                         });
                     }catch (e){
                         logger.error(e);
+                        var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
+                            .replace(/^\s+at\s+/gm, '')
+                            .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
+                            .split('\n');
+                        console.log(stack);
                     }
                 }, function(err){
                     if(err) logger.error('HookController: %s', 'Unable to build repository', {error: err});
