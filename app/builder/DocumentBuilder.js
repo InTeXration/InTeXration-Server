@@ -112,6 +112,7 @@ function DocumentBuilder(document, dir){
             if(log !== null) files.push(log);
             return {
                 name: document.name,
+                timestamp: Date.now(),
                 files: files
             };
         });

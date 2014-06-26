@@ -134,6 +134,7 @@ function RepoBuilder(hook, directory){
                 });
                 deferred.resolve({
                     name: document.name,
+                    timestamp: document.timestamp,
                     files: newFiles
                 });
             });
@@ -158,8 +159,9 @@ function RepoBuilder(hook, directory){
 
     this.makeBuild = function(documents){
         return {
-            bhook: hook,
-            documents: documents
+            buildhook: hook,
+            documents: documents,
+            timestamp: Date.now()
         };
     };
 }

@@ -3,42 +3,47 @@ var mongoose = require('mongoose'),
 
 module.exports = {
 
-    hook: {
+    buildhook: {
         name: 'Hook',
         schema: Schema({
             owner: String,
             repo: String,
             url: String,
             pusher: String,
-            message:String
+            message:String,
+            timestamp: Date
         })
     },
 
     api: {
         name: 'ApiKey',
         schema: Schema({
-            user: String
+            user: String,
+            timestamp: Date
         })
     },
 
     build: {
         name: 'Build',
         schema: Schema({
-            bhook: {
+            buildhook: {
                 owner: String,
                 repo: String,
                 url: String,
                 pusher: String,
-                message:String
+                message:String,
+                timestamp: Date
             },
             documents: [
                 {
                     name: String,
+                    timestamp: Date,
                     files: [
                         {
                             ext: String,
                             name: String,
-                            path: String
+                            path: String,
+                            timestamp: Date
                         }
                     ]
                 }

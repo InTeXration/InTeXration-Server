@@ -48,7 +48,8 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                         repo: data.repository.name,
                         url: data.repository.url,
                         pusher: data.pusher.name,
-                        message: data.head_commit.message
+                        message: data.head_commit.message,
+                        timestamp: Date.now()
                     };
                     var hook = new Hook(hk);
                     Hook.create(hk, function(err, hook){
