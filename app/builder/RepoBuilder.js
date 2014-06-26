@@ -158,7 +158,7 @@ function RepoBuilder(hook, directory){
 
     this.makeBuild = function(documents){
         return {
-            hook: hook,
+            bhook: hook,
             documents: documents
         };
     };

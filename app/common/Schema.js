@@ -10,7 +10,7 @@ module.exports = {
             repo: String,
             url: String,
             pusher: String,
-            message:String,
+            message:String
         })
     },
 
@@ -24,7 +24,7 @@ module.exports = {
     build: {
         name: 'Build',
         schema: Schema({
-            hook: {
+            bhook: {
                 owner: String,
                 repo: String,
                 url: String,
