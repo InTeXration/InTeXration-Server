@@ -134,6 +134,7 @@ function RepoBuilder(hook, directory){
                 });
                 deferred.resolve({
                     name: document.name,
+                    timestamp: document.timestamp,
                     files: newFiles
                 });
             });
