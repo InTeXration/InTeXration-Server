@@ -36,7 +36,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
             }
             else{
                 if(data.hasOwnProperty('zen')){
-                    res.json({message: "WebHook Setup Successful"});
+                    res.json({message: 'WebHook Setup Successful'});
                 }else{
                     var hk = {
                         owner: data.repository.owner.name,

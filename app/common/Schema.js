@@ -41,7 +41,7 @@ module.exports = {
                     timestamp: { type : Date, default: Date.now },
                     files: [
                         {
-                            type: { type: String },
+                            ext: String,
                             name: String,
                             path: String
                         }
