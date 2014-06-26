@@ -9,13 +9,14 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
     var apiKeyManager = new ApiKeyManager(mongoose);
 
     var buildRepo = function(hook){
-        tmp.dir({prefix: 'intexration-'}, function(err, path) {
+        tmp.dir({prefix: 'intexration_'}, function(err, path) {
             if(err) logger.error('HookController: %s', 'Unable to create temp dir', {error: err});
             else {
                 var repoBuilder = new RepoBuilder(hook, path);
                 repoBuilder.build().then(function(b){
-                    var Build = mongoose.model('Build', Schema.buildSchema);
+                    var Build = mongoose.model(Schema.buildName, Schema.buildSchema);
                     var build = new Build(b);
+                    logger.error('BUILD', {build: build});
                     build.save(function(err){
                         if(err) logger.error('HookController: %s', 'Unable to store build', {error: err});
                         else {
@@ -39,7 +40,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                 if(data.hasOwnProperty('zen')){
                     res.json({message: "WebHook Setup Successful"});
                 }else{
-                    var Hook = mongoose.model('Hook', Schema.hookSchema);
+                    var Hook = mongoose.model(Schema.hookName, Schema.hookSchema);
                     var hk = {
                         owner: data.repository.owner.name,
                         repo: data.repository.name,
@@ -48,12 +49,13 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                         message: data.head_commit.message,
                         timestamp: Date.now()
                     };
-                    res.json(hk);
                     var hook = new Hook(hk);
                     hook.save(function(err){
-                        if(err) logger.error('HookController: %s', 'Unable to store hook', {error: err});
-                        else{
-                            logger.debug('HookController: %s', 'Hook stored', {hook: hk});
+                        if(err) {
+                            logger.error('HookController: %s', 'Unable to store hook', {error: err});
+                            res.status(500).json({message: 'Unable to store hook'});
+                        }else{
+                            res.json(hk);
                             buildRepo(hk, res);
                         }
                     });
@@ -63,14 +65,14 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
     };
 
     this.getAll = function (req, res) {
-        var Hook = mongoose.model('Hook', Schema.hookSchema);
+        var Hook = mongoose.model(Schema.hookName, Schema.hookSchema);
         Hook.find({}, function(err, hooks){
             res.json(hooks);
         });
     };
 
     this.get = function (req, res) {
-        var Hook = mongoose.model('Hook', Schema.hookSchema);
+        var Hook = mongoose.model(Schema.hookName, Schema.hookSchema);
         Hook.find({"owner": req.params.owner, "repo": req.params.repo}, function(err, hooks){
             res.json(hooks);
         });

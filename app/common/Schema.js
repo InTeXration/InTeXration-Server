@@ -2,6 +2,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 module.exports = {
+    hookName: 'Hook',
     hookSchema: Schema({
         owner: String,
         repo: String,
@@ -10,9 +11,13 @@ module.exports = {
         message:String,
         timestamp : { type : Date, default: Date.now }
     }),
+
+    apiKeyName: 'ApiKey',
     apiKeySchema: Schema({
         user: String
     }),
+
+    buildName: 'Build',
     buildSchema: Schema({
         hook: {
             owner: String,

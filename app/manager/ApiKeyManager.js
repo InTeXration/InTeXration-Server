@@ -2,8 +2,9 @@ var Schema = require('./../common/Schema');
 
 function ApiKeyManager(mongoose){
 
+    var ApiKey = mongoose.model(Schema.apiKeyName, Schema.apiKeySchema);
+
     this.validate = function(key, callback){
-        var ApiKey = mongoose.model('ApiKey', Schema.apiKeySchema);
         ApiKey.findById(key, function(err, apiKey){
             if(err || apiKey == null) {
                 callback(new Error("API key ("+key+") is invalid."));
@@ -14,13 +15,11 @@ function ApiKeyManager(mongoose){
     };
 
     this.create = function(owner, callback){
-        var ApiKey = mongoose.model('ApiKey', apiKeySchema);
         var apiKey = new ApiKey({"user": owner});
         apiKey.save(callback);
     };
 
     this.remove = function(key, callback){
-        var ApiKey = mongoose.model('ApiKey', apiKeySchema);
         ApiKey.remove({_id: key }, callback);
     }
 }
