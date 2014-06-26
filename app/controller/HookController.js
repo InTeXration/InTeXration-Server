@@ -15,6 +15,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                 var repoBuilder = new RepoBuilder(hook, path);
                 repoBuilder.build().then(function(b){
                     var Build = mongoose.model(Schema.buildName, Schema.buildSchema);
+                    console.log(JSON.stringify(b));
                     var build = new Build(b);
                     logger.error('BUILD', {build: build});
                     build.save(function(err){
