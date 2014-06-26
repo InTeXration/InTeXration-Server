@@ -17,10 +17,14 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
             else {
                 var repoBuilder = new RepoBuilder(hook, path);
                 repoBuilder.build().then(function(b){
-                    Build.create(b, function(err, build){
-                        if(err) logger.error('HookController: %s', 'Unable to create build', {error: err});
-                        else logger.debug('HookController: %s', 'Build stored', {build: b});
-                    });
+                    try{
+                        Build.create(b, function(err, build){
+                            if(err) logger.error('HookController: %s', 'Unable to create build', {error: err});
+                            else logger.debug('HookController: %s', 'Build stored', {build: b});
+                        });
+                    }catch (e){
+                        logger.error(e);
+                    }
                 }, function(err){
                     if(err) logger.error('HookController: %s', 'Unable to build repository', {error: err});
                 });
