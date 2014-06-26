@@ -34,11 +34,9 @@ module.exports = {
                 message:String,
                 timestamp: Date
             },
-            timestamp: Date,
             documents: [
                 {
                     name: String,
-                    timestamp: Date,
                     files: [
                         {
                             ext: String,
