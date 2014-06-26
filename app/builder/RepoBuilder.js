@@ -160,7 +160,7 @@ function RepoBuilder(hook, directory){
         return {
             hook: hook,
             timestamp: timestamp,
-            files: documents
+            documents: documents
         };
     };
 }
