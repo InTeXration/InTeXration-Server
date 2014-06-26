@@ -8,7 +8,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
 
     var apiKeyManager = new ApiKeyManager(mongoose);
 
-    var Hook = mongoose.model(Schema.hook.name, Schema.hook.schema);
+    var Hook = mongoose.model(Schema.buildhook.name, Schema.buildhook.schema);
     var Build = mongoose.model(Schema.build.name, Schema.build.schema);
 
         var buildRepo = function(hook){
@@ -67,14 +67,12 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
     };
 
     this.getAll = function (req, res) {
-        var Hook = mongoose.model(Schema.hook.name, Schema.hook.schema);
         Hook.find({}, function(err, hooks){
             res.json(hooks);
         });
     };
 
     this.get = function (req, res) {
-        var Hook = mongoose.model(Schema.hook.name, Schema.hook.schema);
         Hook.find({"owner": req.params.owner, "repo": req.params.repo}, function(err, hooks){
             res.json(hooks);
         });
