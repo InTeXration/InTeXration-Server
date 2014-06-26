@@ -15,9 +15,13 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                 var repoBuilder = new RepoBuilder(hook, path);
                 repoBuilder.build().then(function(b){
                     var Build = mongoose.model(Schema.build.name, Schema.build.schema);
-                    console.log(JSON.stringify(b));
-                    var build = new Build(b);
-                    logger.error('BUILD', {build: build});
+                    try {
+                        logger.error('BUILD 1 (b)', {build: b});
+                        var build = new Build(b);
+                        logger.error('BUILD 2 (build)', {build: build});
+                    } catch(e){
+                            logger.error('BUILD ERROR', {error: e});
+                    }
                     build.save(function(err){
                         if(err) logger.error('HookController: %s', 'Unable to store build', {error: err});
                         else {
