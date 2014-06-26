@@ -14,7 +14,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
             else {
                 var repoBuilder = new RepoBuilder(hook, path);
                 repoBuilder.build().then(function(b){
-                    var Build = mongoose.model(Schema.buildName, Schema.buildSchema);
+                    var Build = mongoose.model(Schema.build.name, Schema.build.schema);
                     console.log(JSON.stringify(b));
                     var build = new Build(b);
                     logger.error('BUILD', {build: build});
@@ -41,7 +41,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                 if(data.hasOwnProperty('zen')){
                     res.json({message: "WebHook Setup Successful"});
                 }else{
-                    var Hook = mongoose.model(Schema.hookName, Schema.hookSchema);
+                    var Hook = mongoose.model(Schema.hook.name, Schema.hook.schema);
                     var hk = {
                         owner: data.repository.owner.name,
                         repo: data.repository.name,
@@ -66,14 +66,14 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
     };
 
     this.getAll = function (req, res) {
-        var Hook = mongoose.model(Schema.hookName, Schema.hookSchema);
+        var Hook = mongoose.model(Schema.hook.name, Schema.hook.schema);
         Hook.find({}, function(err, hooks){
             res.json(hooks);
         });
     };
 
     this.get = function (req, res) {
-        var Hook = mongoose.model(Schema.hookName, Schema.hookSchema);
+        var Hook = mongoose.model(Schema.hook.name, Schema.hook.schema);
         Hook.find({"owner": req.params.owner, "repo": req.params.repo}, function(err, hooks){
             res.json(hooks);
         });

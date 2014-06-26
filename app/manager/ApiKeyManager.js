@@ -2,7 +2,7 @@ var Schema = require('./../common/Schema');
 
 function ApiKeyManager(mongoose){
 
-    var ApiKey = mongoose.model(Schema.apiKeyName, Schema.apiKeySchema);
+    var ApiKey = mongoose.model(Schema.api.name, Schema.api.schema);
 
     this.validate = function(key, callback){
         ApiKey.findById(key, function(err, apiKey){
