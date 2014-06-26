@@ -44,11 +44,11 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                     res.json({message: 'WebHook Setup Successful'});
                 }else{
                     var hk = {
-                        owner: data.repository.owner.name,
-                        repo: data.repository.name,
-                        url: data.repository.url,
-                        pusher: data.pusher.name,
-                        message: data.head_commit.message
+                        'owner': data.repository.owner.name,
+                        'repo': data.repository.name,
+                        'url': data.repository.url,
+                        'pusher': data.pusher.name,
+                        'message': data.head_commit.message
                     };
                     var hook = new Hook(hk);
                     Hook.create(hk, function(err, hook){
