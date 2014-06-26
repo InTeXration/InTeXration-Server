@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var CONFIG = require('config');
 
 var HookController = require('./app/controller/HookController');
-var BlueprintController = require('./app/controller/BlueprintController');
+var BlueprintController = require('./app/controller/RepoController');
 var FileController = require('./app/controller/FileController');
 var BuildController = require('./app/controller/BuildController');
 
@@ -19,17 +19,25 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
+if (app.get('env') === 'development') {
+    app.all('/', function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        next();
+    });
+}
+
 // Routers
 var hookController = new HookController(mongoose);
 app.post('/hook/:key', function(req, res){
     hookController.post(req, res)
 });
 
-var blueprintController = new BlueprintController(mongoose);
-app.get('/blueprint',  function(req, res){
+var blueprintController = new RepoController(mongoose);
+app.get('/repo',  function(req, res){
     blueprintController.getAll(req, res);
 });
-app.get('/blueprint/:owner/:repo',  function(req, res){
+app.get('/repo/:owner/:repo',  function(req, res){
     blueprintController.get(req, res);
 });
 

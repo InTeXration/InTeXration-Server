@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 module.exports = {
-    blueprintSchema: Schema({
+    repoSchema: Schema({
         owner: String,
         repo: String,
         url: String,

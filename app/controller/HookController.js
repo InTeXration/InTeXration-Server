@@ -15,11 +15,11 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
         }
     };
 
-    var buildRepo = function(blueprint, res){
+    var buildRepo = function(repo, res){
         tmp.dir({prefix: 'intexration-'}, function(err, path) {
             if(err) abort('Unable to create temp dir', 500, err, res);
             else {
-                var repoBuilder = new RepoBuilder(blueprint, path);
+                var repoBuilder = new RepoBuilder(repo, path);
                 repoBuilder.build().then(function(b){
                     var Build = mongoose.model('Build', Schema.buildSchema);
                     var build = Build(b);
@@ -45,8 +45,8 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                 if(data.hasOwnProperty('zen')){
                     res.json({"message": "WebHook Setup Successful"});
                 }else{
-                    var Blueprint = mongoose.model('Blueprint', Schema.blueprintSchema);
-                    var bp = {
+                    var Repo = mongoose.model('Repo', Schema.repoSchema);
+                    var rp = {
                         "owner": data.repository.owner.name,
                         "repo": data.repository.name,
                         "url": data.repository.url,
@@ -54,11 +54,11 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                         "message": data.head_commit.message,
                         "timestamp": Date.now()
                     };
-                    var blueprint = new Blueprint(bp);
+                    var blueprint = new Repo(rp);
                     blueprint.save(function(err){
                         if(err) abort('Unable to store blueprint', 500, err, res);
                         else{
-                            buildRepo(bp, res);
+                            buildRepo(rp, res);
                         }
                     });
                 }
