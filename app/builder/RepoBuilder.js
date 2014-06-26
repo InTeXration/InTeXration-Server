@@ -8,12 +8,12 @@ var _ = require('underscore'),
     logger = require('../common/Logger'),
     CONFIG = require('config');
 
-function RepoBuilder(blueprint, directory){
+function RepoBuilder(hook, directory){
 
     var CONFIG_FILE = '.intexration';
     var timestamp =  Date.now();
 
-    logger.info('Repository Builder (%s) created', timestamp, {blueprint: blueprint, dir: directory});
+    logger.info('Repository Builder (%s) created', timestamp, {hook: hook, dir: directory});
 
     this.build = function(){
         var deferred = Q.defer();
@@ -35,7 +35,7 @@ function RepoBuilder(blueprint, directory){
     this.clone = function (callback) {
         logger.debug('Repository Builder (%s): Clone', timestamp);
         var deferred = Q.defer();
-        var command = "git clone " + blueprint.url + " " + directory;
+        var command = "git clone " + hook.url + " " + directory;
         exec(command, {"cwd": directory}, function (err) {
             if (err) deferred.reject(err);
             else deferred.resolve();
@@ -53,7 +53,7 @@ function RepoBuilder(blueprint, directory){
                 var config = JSON.parse(data);
                 var documents = [];
                 _.each(config.documents, function(document) {
-                    document.build = blueprint;
+                    document.build = hook;
                     documents.push(document)
                 });
                 deferred.resolve(documents);
@@ -69,7 +69,7 @@ function RepoBuilder(blueprint, directory){
 
         var make = function(document){
             var deferred = Q.defer();
-            var path = p.join(blueprint.owner, blueprint.repo, document.name);
+            var path = p.join(hook.owner, hook.repo, document.name);
             mkdirp(path, function (err) {
                 if (err) logger.error('Repository Builder (%s): Make Documents Failed', timestamp, {error: err});
                 else {
@@ -120,7 +120,7 @@ function RepoBuilder(blueprint, directory){
         var moveDoc = function(document){
             var deferred = Q.defer();
             var promises = [];
-            var dir = p.join(blueprint.owner, blueprint.repo, document.name);
+            var dir = p.join(hook.owner, hook.repo, document.name);
             document.files.forEach(function(file){
                 promises.push(moveFile(file,dir));
             });
@@ -134,6 +134,7 @@ function RepoBuilder(blueprint, directory){
                 });
                 deferred.resolve({
                     name: document.name,
+                    timestamp: document.timestamp,
                     files: newFiles
                 });
             });
@@ -158,9 +159,9 @@ function RepoBuilder(blueprint, directory){
 
     this.makeBuild = function(documents){
         return {
-            blueprint: blueprint,
-            timestamp: timestamp,
-            documents: documents
+            buildhook: hook,
+            documents: documents,
+            timestamp: Date.now()
         };
     };
 }

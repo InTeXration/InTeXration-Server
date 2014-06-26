@@ -8,30 +8,26 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
 
     var apiKeyManager = new ApiKeyManager(mongoose);
 
-    var abort = function(code, message, err, res){
-        if(err){
-            logger.error('HookController: %s', message, {error: err});
-            res.status(code).json({"message": message});
-        }
-    };
+    var Hook = mongoose.model(Schema.buildhook.name, Schema.buildhook.schema);
+    var Build = mongoose.model(Schema.build.name, Schema.build.schema);
 
-    var buildRepo = function(blueprint, res){
-        tmp.dir({prefix: 'intexration-'}, function(err, path) {
-            if(err) abort('Unable to create temp dir', 500, err, res);
+        var buildRepo = function(hook){
+        tmp.dir({prefix: 'intexration_'}, function(err, path) {
+            if(err) logger.error('HookController: %s', 'Unable to create temp dir', {error: err});
             else {
-                var repoBuilder = new RepoBuilder(blueprint, path);
+                var repoBuilder = new RepoBuilder(hook, path);
                 repoBuilder.build().then(function(b){
-                    var Build = mongoose.model('Build', Schema.buildSchema);
-                    var build = Build(b);
-                    build.save(function(err){
-                        if(err) abort('Unable to store build', 500, err, res);
-                        else {
-                            // TODO: Do not return paths!
-                            res.json(b);
-                        }
-                    });
+                    try{
+                        Build.create(b, function(err, build){
+                            if(err) logger.error('HookController: %s', 'Unable to create build', {error: err});
+                            else logger.debug('HookController: %s', 'Build stored', {build: b});
+                        });
+                    }catch (e){
+                        logger.error(e);
+                        console.log(e.stack);
+                    }
                 }, function(err){
-                    if(err) abort('Unable to build repository', 500, err, res);
+                    if(err) logger.error('HookController: %s', 'Unable to build repository', {error: err});
                 });
             }
         });
@@ -40,31 +36,47 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
     this.post = function (req, res) {
         var data = req.body;
         apiKeyManager.validate(req.params.key, function(err){
-            if(err) abort('Invalid API Key', 401, err, res);
+            if(err) {
+                res.status(401).json({message: 'Invalid API Key'});
+            }
             else{
                 if(data.hasOwnProperty('zen')){
-                    res.json({"message": "WebHook Setup Successful"});
+                    res.json({message: 'WebHook Setup Successful'});
                 }else{
-                    var Blueprint = mongoose.model('Blueprint', Schema.blueprintSchema);
-                    var bp = {
-                        "owner": data.repository.owner.name,
-                        "repo": data.repository.name,
-                        "url": data.repository.url,
-                        "pusher": data.pusher.name,
-                        "message": data.head_commit.message,
-                        "timestamp": Date.now()
+                    var hk = {
+                        owner: data.repository.owner.name,
+                        repo: data.repository.name,
+                        url: data.repository.url,
+                        pusher: data.pusher.name,
+                        message: data.head_commit.message,
+                        timestamp: Date.now()
                     };
-                    var blueprint = new Blueprint(bp);
-                    blueprint.save(function(err){
-                        if(err) abort('Unable to store blueprint', 500, err, res);
-                        else{
-                            buildRepo(bp, res);
+                    var hook = new Hook(hk);
+                    Hook.create(hk, function(err, hook){
+                        if(err) {
+                            logger.error('HookController: %s', 'Unable to create hook', {error: err});
+                            res.status(500).json({message: 'Unable to store hook'});
+                        }else{
+                            res.json(hk);
+                            buildRepo(hk, res);
                         }
                     });
                 }
             }
         });
     };
+
+    this.getAll = function (req, res) {
+        Hook.find({}, function(err, hooks){
+            res.json(hooks);
+        });
+    };
+
+    this.get = function (req, res) {
+        Hook.find({"owner": req.params.owner, "repo": req.params.repo}, function(err, hooks){
+            res.json(hooks);
+        });
+    }
 }
 
 module.exports = HookController;
