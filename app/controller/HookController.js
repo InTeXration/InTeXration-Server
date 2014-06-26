@@ -8,7 +8,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
 
     var apiKeyManager = new ApiKeyManager(mongoose);
 
-    var buildRepo = function(hook, res){
+    var buildRepo = function(hook){
         tmp.dir({prefix: 'intexration-'}, function(err, path) {
             if(err) logger.error('HookController: %s', 'Unable to create temp dir', {error: err});
             else {
@@ -19,7 +19,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                     build.save(function(err){
                         if(err) logger.error('HookController: %s', 'Unable to store build', {error: err});
                         else {
-                            res.json(b);
+                            logger.debug('HookController: %s', 'Build stored', {build: b});
                         }
                     });
                 }, function(err){
@@ -53,6 +53,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                     hook.save(function(err){
                         if(err) logger.error('HookController: %s', 'Unable to store hook', {error: err});
                         else{
+                            logger.debug('HookController: %s', 'Hook stored', {hook: hk});
                             buildRepo(hk, res);
                         }
                     });
