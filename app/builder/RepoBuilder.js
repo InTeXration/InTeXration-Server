@@ -134,7 +134,6 @@ function RepoBuilder(hook, directory){
                 });
                 deferred.resolve({
                     name: document.name,
-                    timestamp: document.timestamp,
                     files: newFiles
                 });
             });
@@ -160,7 +159,6 @@ function RepoBuilder(hook, directory){
     this.makeBuild = function(documents){
         return {
             hook: hook,
-            timestamp: timestamp,
             documents: documents
         };
     };
