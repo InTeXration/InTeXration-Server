@@ -7,7 +7,6 @@ var mongoose = require('mongoose');
 var CONFIG = require('config');
 
 var HookController = require('./app/controller/HookController');
-var BlueprintController = require('./app/controller/RepoController');
 var FileController = require('./app/controller/FileController');
 var BuildController = require('./app/controller/BuildController');
 
@@ -32,13 +31,11 @@ var hookController = new HookController(mongoose);
 app.post('/hook/:key', function(req, res){
     hookController.post(req, res)
 });
-
-var blueprintController = new RepoController(mongoose);
-app.get('/repo',  function(req, res){
-    blueprintController.getAll(req, res);
+app.get('/hook',  function(req, res){
+    hookController.getAll(req, res);
 });
-app.get('/repo/:owner/:repo',  function(req, res){
-    blueprintController.get(req, res);
+app.get('/hook/:owner/:repo',  function(req, res){
+    hookController.get(req, res);
 });
 
 var buildController = new BuildController(mongoose);

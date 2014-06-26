@@ -15,11 +15,11 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
         }
     };
 
-    var buildRepo = function(repo, res){
+    var buildRepo = function(hook, res){
         tmp.dir({prefix: 'intexration-'}, function(err, path) {
             if(err) abort('Unable to create temp dir', 500, err, res);
             else {
-                var repoBuilder = new RepoBuilder(repo, path);
+                var repoBuilder = new RepoBuilder(hook, path);
                 repoBuilder.build().then(function(b){
                     var Build = mongoose.model('Build', Schema.buildSchema);
                     var build = Build(b);
@@ -45,8 +45,8 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                 if(data.hasOwnProperty('zen')){
                     res.json({"message": "WebHook Setup Successful"});
                 }else{
-                    var Repo = mongoose.model('Repo', Schema.repoSchema);
-                    var rp = {
+                    var Hook = mongoose.model('Hook', Schema.hookSchema);
+                    var hk = {
                         "owner": data.repository.owner.name,
                         "repo": data.repository.name,
                         "url": data.repository.url,
@@ -54,17 +54,31 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
                         "message": data.head_commit.message,
                         "timestamp": Date.now()
                     };
-                    var blueprint = new Repo(rp);
-                    blueprint.save(function(err){
-                        if(err) abort('Unable to store blueprint', 500, err, res);
+                    var hook = new Hook(hk);
+                    hook.save(function(err){
+                        if(err) abort('Unable to store hook', 500, err, res);
                         else{
-                            buildRepo(rp, res);
+                            buildRepo(hk, res);
                         }
                     });
                 }
             }
         });
     };
+
+    this.getAll = function (req, res) {
+        var Hook = mongoose.model('Hook', Schema.hookSchema);
+        Hook.find({}, function(err, hooks){
+            res.json(hooks);
+        });
+    };
+
+    this.get = function (req, res) {
+        var Hook = mongoose.model('Hook', Schema.hookSchema);
+        Hook.find({"owner": req.params.owner, "repo": req.params.repo}, function(err, hooks){
+            res.json(hooks);
+        });
+    }
 }
 
 module.exports = HookController;

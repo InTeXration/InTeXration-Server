@@ -13,7 +13,7 @@ function BuildController(mongoose){
 
     this.get = function (req, res) {
         var Build = mongoose.model('Build', Schema.buildSchema);
-        Build.findOne({"blueprint.owner": req.params.owner, "blueprint.repo": req.params.repo}, {}, { sort: { _id : -1 } }, function(err, build){
+        Build.findOne({"hook.owner": req.params.owner, "hook.repo": req.params.repo}, {}, { sort: { _id : -1 } }, function(err, build){
             if(err) res.status(500).json({message: err.message});
             else res.json(build);
         });

@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 module.exports = {
-    repoSchema: Schema({
+    hookSchema: Schema({
         owner: String,
         repo: String,
         url: String,
@@ -14,7 +14,7 @@ module.exports = {
         user: String
     }),
     buildSchema: Schema({
-        blueprint: {
+        hook: {
             owner: String,
             repo: String,
             url: String,
