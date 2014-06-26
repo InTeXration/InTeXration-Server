@@ -17,14 +17,6 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
             else {
                 var repoBuilder = new RepoBuilder(hook, path);
                 repoBuilder.build().then(function(b){
-                    try {
-                        logger.error('BUILD 1 (b)', {build: b});
-                        var build = new Build(b);
-                        logger.error('BUILD 2 (build)', {build: build});
-                    } catch(e){
-                            logger.error('BUILD ERROR', {error: e});
-                    }
-
                     Build.create(b, function(err, build){
                         if(err) logger.error('HookController: %s', 'Unable to create build', {error: err});
                         else logger.debug('HookController: %s', 'Build stored', {build: b});
