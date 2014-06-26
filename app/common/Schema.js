@@ -11,15 +11,13 @@ module.exports = {
             url: String,
             pusher: String,
             message:String,
-            timestamp: Date
         })
     },
 
     api: {
         name: 'ApiKey',
         schema: Schema({
-            user: String,
-            timestamp: Date
+            user: String
         })
     },
 
@@ -32,7 +30,6 @@ module.exports = {
                 url: String,
                 pusher: String,
                 message:String,
-                timestamp: Date
             },
             documents: [
                 {
