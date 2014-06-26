@@ -72,7 +72,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
         });
     };
 
-    this.get = function (req, res) {
+    this.getByRepo = function (req, res) {
         Hook.find({"owner": req.params.owner, "repo": req.params.repo}, function(err, hooks){
             res.json(hooks);
         });

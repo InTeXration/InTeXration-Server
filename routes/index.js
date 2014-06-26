@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('*', function(req, res){
+router.getByRepo('*', function(req, res){
     res.render('index.html');
 });
 
