@@ -11,7 +11,7 @@ module.exports = {
             url: String,
             pusher: String,
             message:String,
-            timestamp : { type : Date, default: Date.now }
+            timestamp: Date
         })
     },
 
@@ -19,7 +19,7 @@ module.exports = {
         name: 'ApiKey',
         schema: Schema({
             user: String,
-            timestamp: { type : Date, default: Date.now }
+            timestamp: Date
         })
     },
 
@@ -32,13 +32,13 @@ module.exports = {
                 url: String,
                 pusher: String,
                 message:String,
-                timestamp : { type : Date, default: Date.now }
+                timestamp: Date
             },
-            timestamp : { type : Date, default: Date.now },
+            timestamp: Date,
             documents: [
                 {
                     name: String,
-                    timestamp: { type : Date, default: Date.now },
+                    timestamp: Date,
                     files: [
                         {
                             ext: String,
