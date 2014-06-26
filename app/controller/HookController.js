@@ -14,6 +14,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
             else {
                 var repoBuilder = new RepoBuilder(hook, path);
                 repoBuilder.build().then(function(b){
+                    logger.error('BUILD', {b:b});
                     var Build = mongoose.model('Build', Schema.buildSchema);
                     var build = Build(b);
                     build.save(function(err){

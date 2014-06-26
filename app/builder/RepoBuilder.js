@@ -157,7 +157,6 @@ function RepoBuilder(hook, directory){
     };
 
     this.makeBuild = function(documents){
-        logger.debug('Repository Builder (%s): Make Build', timestamp, {documents: documents});
         return {
             hook: hook,
             timestamp: timestamp,
