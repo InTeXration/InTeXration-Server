@@ -30,34 +30,34 @@ var hookController = new HookController(mongoose);
 app.post('/hook/:key', function(req, res){
     hookController.post(req, res)
 });
-app.getByRepo('/hook',  function(req, res){
+app.get('/hook',  function(req, res){
     hookController.getAll(req, res);
 });
-app.getByRepo('/hook/:owner/:repo',  function(req, res){
+app.get('/hook/:owner/:repo',  function(req, res){
     hookController.getByRepo(req, res);
 });
 
 var buildController = new BuildController(mongoose);
-app.getByRepo('/build',  function(req, res){
+app.get('/build',  function(req, res){
     buildController.getAll(req, res);
 });
 
-app.getByRepo('/build/:owner/:repo',  function(req, res){
+app.get('/build/:owner/:repo',  function(req, res){
     buildController.getByRepo(req, res);
 });
 
-app.getByRepo('/build/:id',  function(req, res){
+app.get('/build/:id',  function(req, res){
     buildController.get(req, res);
 });
 
 var fileController = new FileController(mongoose);
-app.getByRepo('/file/:owner/:repo/:name/pdf', function(req, res){
+app.get('/file/:owner/:repo/:name/pdf', function(req, res){
     fileController.getPdf(req, res);
 });
-app.getByRepo('/file/:owner/:repo/:name/log', function(req, res){
+app.get('/file/:owner/:repo/:name/log', function(req, res){
     fileController.getLog(req, res);
 });
-app.getByRepo('/file/:owner/:repo/:name/data', function(req, res){
+app.get('/file/:owner/:repo/:name/data', function(req, res){
     fileController.getData(req, res);
 });
 
