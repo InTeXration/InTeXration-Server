@@ -71,7 +71,7 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-if (app.getByRepo('env') === 'development') {
+if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         console.error(err);
         res.status(err.status || 500);
