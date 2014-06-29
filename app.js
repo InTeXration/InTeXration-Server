@@ -16,7 +16,7 @@ var allowCrossDomain = function(req, res, next) {
   next();
 };
 
-//mongoose.connect('mongodb://'+CONFIG.mongo.host+':'+CONFIG.mongo.port+'/'+CONFIG.mongo.db);
+mongoose.connect('mongodb://'+CONFIG.mongo.host+':'+CONFIG.mongo.port+'/'+CONFIG.mongo.db);
 
 var app = express();
 
