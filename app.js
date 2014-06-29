@@ -61,12 +61,8 @@ app.getByRepo('/file/:owner/:repo/:name/data', function(req, res){
     fileController.getData(req, res);
 });
 
-
-app.getByRepo('*', function(req, res){
-    res.json({"message": "To be replaced with Front-End"});
-});
-
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'front')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function(req, res, next) {
