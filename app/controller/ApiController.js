@@ -23,6 +23,7 @@ function ApiManager(mongoose){
     };
 
     this.get = function(req, res){
+        logger.debug("Key: %s", req.key);
         this.validate(req.key, function(err, key){
             if(err) res.status(500).json({message: err.message});
             else res.json(key);
@@ -31,8 +32,7 @@ function ApiManager(mongoose){
 
     this.getAll = function(req, res){
         var user = req._passport.session.user;
-        logger.info(user);
-        ApiKey.find({ githubId: user.id}, function (err, keys) {
+        ApiKey.find({ githubId: user.githubId}, function (err, keys) {
             if(err) res.status(500).json({message: err.message});
             else res.json(keys);
         });
@@ -40,7 +40,7 @@ function ApiManager(mongoose){
 
     this.getNew =function(req, res){
         var user = req._passport.session.user;
-        var apiKey = new ApiKey({githubId: user.id});
+        var apiKey = new ApiKey({githubId: user.githubId});
         apiKey.save(callback, function(err, key){
             if(err) res.status(500).json({message: err.message});
             else res.json(key);
