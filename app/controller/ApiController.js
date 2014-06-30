@@ -40,7 +40,7 @@ function ApiManager(mongoose){
     this.getCreate =function(req, res){
         var user = req._passport.session.user;
         var apiKey = new ApiKey({githubId: user.githubId});
-        apiKey.save(callback, function(err, key){
+        apiKey.save(function(err, key){
             if(err) res.status(500).json({message: err.message});
             else res.json(key);
         });
