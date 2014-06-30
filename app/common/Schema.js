@@ -6,7 +6,7 @@ module.exports = {
     api: {
         name: 'ApiKey',
         schema: Schema({
-            user: String,
+            githubId: String,
             timestamp: Date
         })
     },

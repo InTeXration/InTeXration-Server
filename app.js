@@ -11,7 +11,7 @@ var CONFIG = require('config');
 var HookController = require('./app/controller/HookController');
 var FileController = require('./app/controller/FileController');
 var BuildController = require('./app/controller/BuildController');
-
+var ApiController = require('./app/controller/ApiController');
 var UserManager = require('./app/manager/UserManager');
 
 // Connect to MognoDB
@@ -58,7 +58,18 @@ app.use(passport.session());
 app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/' }));
 
-var hookController = new HookController(mongoose);
+var apiController = new ApiController(mongoose);
+app.get('/api', auth, function(req, res){
+    apiController.getAll(req, res);
+});
+app.get('/api/:id', auth, function(req, res){
+    apiController.get(req, res);
+});
+app.get('/api/new', auth, function(req, res){
+    apiController.new(req, res);
+});
+
+var hookController = new HookController(mongoose, apiController);
 app.post('/hook/:key', function(req, res){
     hookController.post(req, res)
 });

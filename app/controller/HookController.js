@@ -1,12 +1,9 @@
 var RepoBuilder = require('./../builder/RepoBuilder'),
     Schema = require('./../common/Schema'),
-    ApiKeyManager = require('./../manager/ApiManager'),
     logger = require('../common/Logger'),
     tmp = require('tmp');
 
-    function HookController(mongoose){
-
-    var apiKeyManager = new ApiKeyManager(mongoose);
+    function HookController(mongoose, apiController){
 
     var Hook = mongoose.model(Schema.buildhook.name, Schema.buildhook.schema);
     var Build = mongoose.model(Schema.build.name, Schema.build.schema);
@@ -35,7 +32,7 @@ var RepoBuilder = require('./../builder/RepoBuilder'),
 
     this.post = function (req, res) {
         var data = req.body;
-        apiKeyManager.validate(req.params.key, function(err){
+        apiController.validate(req.params.key, function(err){
             if(err) {
                 res.status(401).json({message: 'Invalid API Key'});
             }
