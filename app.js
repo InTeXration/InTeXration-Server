@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -33,16 +34,19 @@ passport.use(new GitHubStrategy(CONFIG.oauth.github,
         });
     }
 ));
-var auth = function(req, res, next) {
-    if (req.isAuthenticated()) { return next(); }
-    res.send(401);
-};
 passport.serializeUser(function(user, done) {
     done(null, user);
 });
 passport.deserializeUser(function(obj, done) {
     done(null, obj);
 });
+var auth = function(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }else{
+        res.send(401);
+    }
+};
 
 // Express
 var app = express();
@@ -51,6 +55,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(allowCrossDomain);
 app.use(cookieParser());
+app.use(session({ secret: 'AKDFOOCH'}));
 app.use(passport.initialize());
 app.use(passport.session());
 

@@ -31,7 +31,7 @@ function ApiManager(mongoose){
     };
 
     this.getAll = function(req, res){
-        ApiKey.find({ githubId: req.id}, function (err, keys) {
+        ApiKey.find({ githubId: req.user.id}, function (err, keys) {
             if(err) res.status(500).json({message: err.message});
             else res.json(keys);
         });
