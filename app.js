@@ -64,6 +64,10 @@ app.use(session({ secret: 'AKDFOOCH'}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Static Files
+app.use(express.static(path.join(__dirname, 'front')));
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Passport Routes
 app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/' }));
@@ -120,9 +124,11 @@ app.get('/file/:owner/:repo/:name/data', function(req, res){
     fileController.getData(req, res);
 });
 
-// Static Files
-app.use(express.static(path.join(__dirname, 'front')));
-app.use(express.static(path.join(__dirname, 'public')));
+// Front-End Routes
+app.get('*', function(req, res){
+    res.status(200).sendfile('./front/index.html');
+});
+
 
 // Error Handlers
 app.use(function(req, res, next) {
