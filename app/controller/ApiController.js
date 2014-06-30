@@ -8,7 +8,7 @@ function ApiManager(mongoose){
     this.validate = function(key, callback){
         ApiKey.findById(key, function(err, apiKey){
             if(err || apiKey == null) {
-                callback(new Error("API key ("+key+") is invalid."));
+                callback(new Error("API key "+key+" is invalid."));
             }else{
                 callback(null, apiKey);
             }
@@ -37,7 +37,7 @@ function ApiManager(mongoose){
         });
     };
 
-    this.getNew =function(req, res){
+    this.getCreate =function(req, res){
         var user = req._passport.session.user;
         var apiKey = new ApiKey({githubId: user.githubId});
         apiKey.save(callback, function(err, key){
