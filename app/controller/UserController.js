@@ -27,7 +27,8 @@ function UserController(mongoose){
                     githubId: profile.id,
                     username: profile.username,
                     displayName: profile.displayName,
-                    email: profile.emails[0].value
+                    email: profile.emails[0].value,
+                    avatar: profile.json.avatar.url
                 });
                 user.save(function(err, user){
                     mailController.signup(user.displayName, user.email);

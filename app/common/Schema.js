@@ -17,7 +17,8 @@ module.exports = {
             githubId: String,
             username : String,
             displayName: String,
-            email: String
+            email: String,
+            avatar: String
         })
     },
 
