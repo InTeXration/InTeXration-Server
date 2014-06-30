@@ -67,11 +67,14 @@ var apiController = new ApiController(mongoose);
 app.get('/api', auth, function(req, res){
     apiController.getAll(req, res);
 });
-app.get('/api/:id', auth, function(req, res){
+app.get('/api/:key', auth, function(req, res){
     apiController.get(req, res);
 });
+app.delete('/api/:key', auth, function(req, res){
+    apiController.remove(req, res);
+});
 app.get('/api/new', auth, function(req, res){
-    apiController.new(req, res);
+    apiController.getNew(req, res);
 });
 
 var hookController = new HookController(mongoose, apiController);

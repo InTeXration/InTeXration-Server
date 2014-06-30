@@ -14,32 +14,32 @@ function ApiManager(mongoose){
         });
     };
 
-    this.create = function(githubId, callback){
-        var apiKey = new ApiKey({githubId: githubId});
-        apiKey.save(callback);
-    };
-
-    this.remove = function(key, callback){
-        ApiKey.remove({_id: key }, callback);
+    this.remove = function(req, res){
+        ApiKey.remove({_id: req.key }, function(err){
+            if(err) res.status(500).json({message: err.message});
+            else res.json({success: true});
+        });
     };
 
     this.get = function(req, res){
-        this.validate(req.id, function(err, key){
+        this.validate(req.key, function(err, key){
             if(err) res.status(500).json({message: err.message});
             else res.json(key);
-        })
+        });
     };
 
     this.getAll = function(req, res){
-        ApiKey.find({ githubId: req.user.id}, function (err, keys) {
+        var user = req._passport.session.user;
+        ApiKey.find({ githubId: user.id}, function (err, keys) {
             if(err) res.status(500).json({message: err.message});
             else res.json(keys);
         });
     };
 
-    this.new =function(req, res){
-        var user = req.user;
-        create(user.id, function(err, key){
+    this.getNew =function(req, res){
+        var user = req._passport.session.user;
+        var apiKey = new ApiKey({githubId: user.id});
+        apiKey.save(callback, function(err, key){
             if(err) res.status(500).json({message: err.message});
             else res.json(key);
         });
