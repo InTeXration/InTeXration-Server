@@ -7,7 +7,8 @@ function UserManager(mongoose){
     var User = mongoose.model(Schema.user.name, Schema.user.schema);
 
     this.findOrCreate = function(profile, callback){
-        User.findById(profile.id, function(err, user){
+        var id = mongoose.Types.ObjectId(profile.id);
+        User.findById(id, function(err, user){
             if(err){
                 callback(err);
             }else if(user !== null){
