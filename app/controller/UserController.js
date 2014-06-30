@@ -28,7 +28,7 @@ function UserController(mongoose){
                     username: profile.username,
                     displayName: profile.displayName,
                     email: profile.emails[0].value,
-                    avatar: profile.json.avatar_url
+                    avatar: profile._json.avatar_url
                 });
                 user.save(function(err, user){
                     mailController.signup(user.displayName, user.email);
