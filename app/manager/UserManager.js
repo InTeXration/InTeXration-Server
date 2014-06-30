@@ -19,7 +19,7 @@ function UserManager(mongoose){
                     id: profile.id,
                     username: profile.username,
                     displayName: profile.displayName,
-                    email: user.emails[0].value
+                    email: profile.emails[0].value
                 });
                 user.save(function(err, user){
                     MailManager.signup(user.displayName, user.email);
