@@ -1,0 +1,20 @@
+{
+    "storage": {
+        "path": "./public/"
+    },
+    "mongo": {
+        "host": "localhost",
+        "port": "27017",
+        "db": "intexration"
+    },
+    "mail": {
+        "sender": "info@intexration.com"
+    },
+    "oauth": {
+        "github": {
+            "clientID": "",
+            "clientSecret": "",
+            "callbackURL": "http://intexration.com/auth/github/callback"
+        }
+    }
+}

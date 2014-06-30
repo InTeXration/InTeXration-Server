@@ -14,6 +14,9 @@ var BuildController = require('./app/controller/BuildController');
 
 var UserManager = require('./app/manager/UserManager');
 
+// Connect to MognoDB
+mongoose.connect('mongodb://'+CONFIG.mongo.host+':'+CONFIG.mongo.port+'/'+CONFIG.mongo.db);
+
 // Cross-Origin Resource Sharing
 var allowCrossDomain = function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -22,9 +25,10 @@ var allowCrossDomain = function(req, res, next) {
 };
 
 // Passport
+var userManager = new UserManager(mongoose);
 passport.use(new GitHubStrategy(CONFIG.oauth.github,
     function(accessToken, refreshToken, profile, done) {
-        UserManager.findOrCreate(profile, function (err, user) {
+        userManager.findOrCreate(profile, function (err, user) {
             return done(err, user);
         });
     }
@@ -34,8 +38,6 @@ var auth = function(req, res, next) {
     res.send(401);
 };
 
-// Connect to MognoDB
-mongoose.connect('mongodb://'+CONFIG.mongo.host+':'+CONFIG.mongo.port+'/'+CONFIG.mongo.db);
 
 // Express
 var app = express();
