@@ -1,6 +1,6 @@
 var Schema = require('./../common/Schema');
 
-function ApiKeyManager(mongoose){
+function ApiManager(mongoose){
 
     var ApiKey = mongoose.model(Schema.api.name, Schema.api.schema);
 
@@ -9,7 +9,7 @@ function ApiKeyManager(mongoose){
             if(err || apiKey == null) {
                 callback(new Error("API key ("+key+") is invalid."));
             }else{
-                callback(false);
+                callback(null);
             }
         });
     };
@@ -24,4 +24,4 @@ function ApiKeyManager(mongoose){
     }
 }
 
-module.exports = ApiKeyManager;
+module.exports = ApiManager;

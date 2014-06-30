@@ -1,6 +1,6 @@
 var RepoBuilder = require('./../builder/RepoBuilder'),
     Schema = require('./../common/Schema'),
-    ApiKeyManager = require('./../manager/ApiKeyManager'),
+    ApiKeyManager = require('./../manager/ApiManager'),
     logger = require('../common/Logger'),
     tmp = require('tmp');
 
