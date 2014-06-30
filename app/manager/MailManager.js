@@ -4,7 +4,7 @@ var _ = require('underscore'),
     logger = require('../common/Logger'),
     CONFIG = require('config');
 
-function MailManager(mongoose){
+function MailManager(){
 
     this.send = function(to, subject, template, data){
         var templatePath = '../../templates/' + template;

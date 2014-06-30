@@ -5,6 +5,7 @@ var Schema = require('./../common/Schema'),
 function UserManager(mongoose){
 
     var User = mongoose.model(Schema.user.name, Schema.user.schema);
+    var mailManager = new MailManager();
 
     this.findOrCreate = function(profile, callback){
         var id = mongoose.Types.ObjectId(profile.id);
@@ -22,7 +23,7 @@ function UserManager(mongoose){
                     email: profile.emails[0].value
                 });
                 user.save(function(err, user){
-                    MailManager.signup(user.displayName, user.email);
+                    mailManager.signup(user.displayName, user.email);
                     callback(err, user);
                 });
             }
