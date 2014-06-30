@@ -8,7 +8,7 @@ var _ = require('underscore'),
 function MailManager(){
 
     this.send = function(to, subject, template, data){
-        var templatePath = p.join(p.dirname(require.main.filename), template);
+        var templatePath = p.resolve(__dirname, '../../', 'templates', template);
         var templateFile = fs.readFileSync(templatePath).toString();
         var html = _.template(templateFile, data);
         var from = CONFIG.mail.sender;
