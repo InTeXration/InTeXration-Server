@@ -17,7 +17,7 @@ function UserManager(mongoose){
             }else{
                 logger.debug("UserManager: New User %s", profile.username);
                 var user = new User({
-                    id: profile.id,
+                    _id: id,
                     username: profile.username,
                     displayName: profile.displayName,
                     email: profile.emails[0].value
