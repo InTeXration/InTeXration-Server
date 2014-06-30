@@ -23,8 +23,7 @@ function ApiManager(mongoose){
     };
 
     this.get = function(req, res){
-        logger.debug("Key: %s", req.key);
-        this.validate(req.key, function(err, key){
+        this.validate(req.params.key, function(err, key){
             if(err) res.status(500).json({message: err.message});
             else res.json(key);
         });
