@@ -14,6 +14,7 @@ module.exports = {
     user: {
         name: 'User',
         schema: Schema({
+            githubId: String,
             username : String,
             displayName: String,
             email: String

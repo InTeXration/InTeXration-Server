@@ -8,8 +8,7 @@ function UserManager(mongoose){
     var mailManager = new MailManager();
 
     this.findOrCreate = function(profile, callback){
-        var id = profile.id;
-        User.findById(id, function(err, user){
+        User.findOne({githubId: profile.id}, function(err, user){
             if(err){
                 callback(err);
             }else if(user !== null){
@@ -17,7 +16,7 @@ function UserManager(mongoose){
             }else{
                 logger.debug("UserManager: New User %s", profile.username);
                 var user = new User({
-                    _id: mongoose.Types.ObjectId.fromString(profile.id),
+                    githubId: profile.id,
                     username: profile.username,
                     displayName: profile.displayName,
                     email: profile.emails[0].value
