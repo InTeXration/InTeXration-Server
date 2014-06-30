@@ -69,14 +69,8 @@ function RepoBuilder(hook, directory){
 
         var make = function(document){
             var deferred = Q.defer();
-            var path = p.join(hook.owner, hook.repo, document.name);
-            mkdirp(path, function (err) {
-                if (err) logger.error('Repository Builder (%s): Make Documents Failed', timestamp, {error: err});
-                else {
-                    var documentBuilder = new DocumentBuilder(document, directory, path);
-                    documentBuilder.build().then(deferred.resolve, deferred.error);
-                }
-            });
+            var documentBuilder = new DocumentBuilder(document, directory);
+            documentBuilder.build().then(deferred.resolve, deferred.error);
             return deferred.promise;
 
         };
@@ -104,14 +98,22 @@ function RepoBuilder(hook, directory){
             if(file === null)
                 deferred.reject(new Error("Cannot move: file is null."));
             var oldPath = p.join(file.path, file.name);
-            var newPath = p.join(CONFIG.storage.path, dir, file.name);
-            fs.rename(oldPath, newPath, function(err){
-                if (err) {
-                    logger.error('Repository Builder (%s): Unable to move file', timestamp, {oldPath: oldPath, newPath:newPath});
+            var newDir = p.join(CONFIG.storage.path, dir);
+            var newPath = p.join(newDir, file.name);
+            mkdirp(newDir, function (err) {
+                if(err){
+                    logger.error('Repository Builder (%s): Unable to create directory', timestamp, {error: err, dir: newDir});
                     deferred.resolve(null);
                 }else {
-                    file.path = dir;
-                    deferred.resolve(file);
+                    fs.rename(oldPath, newPath, function (err) {
+                        if (err) {
+                            logger.error('Repository Builder (%s): Unable to move file', timestamp, {oldPath: oldPath, newPath: newPath});
+                            deferred.resolve(null);
+                        } else {
+                            file.path = dir;
+                            deferred.resolve(file);
+                        }
+                    });
                 }
             });
             return deferred.promise;
@@ -122,6 +124,7 @@ function RepoBuilder(hook, directory){
             var promises = [];
             var dir = p.join(hook.owner, hook.repo, document.name);
             document.files.forEach(function(file){
+
                 promises.push(moveFile(file,dir));
             });
             Q.allSettled(promises).then(function(results){
