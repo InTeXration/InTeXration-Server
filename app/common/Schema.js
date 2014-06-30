@@ -3,6 +3,23 @@ var mongoose = require('mongoose'),
 
 module.exports = {
 
+    api: {
+        name: 'ApiKey',
+        schema: Schema({
+            user: String,
+            timestamp: Date
+        })
+    },
+
+    user: {
+        name: 'User',
+        schema: Schema({
+            username : String,
+            displayName: String,
+            email: String
+        })
+    },
+
     buildhook: {
         name: 'Hook',
         schema: Schema({
@@ -11,14 +28,6 @@ module.exports = {
             url: String,
             pusher: String,
             message:String,
-            timestamp: Date
-        })
-    },
-
-    api: {
-        name: 'ApiKey',
-        schema: Schema({
-            user: String,
             timestamp: Date
         })
     },

@@ -4,28 +4,53 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport');
+var GitHubStrategy = require('passport-github').Strategy;
 var CONFIG = require('config');
 
 var HookController = require('./app/controller/HookController');
 var FileController = require('./app/controller/FileController');
 var BuildController = require('./app/controller/BuildController');
 
+var UserManager = require('./app/manager/UserManager');
+
+// Cross-Origin Resource Sharing
 var allowCrossDomain = function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   next();
 };
 
+// Passport
+passport.use(new GitHubStrategy(CONFIG.oauth.github,
+    function(accessToken, refreshToken, profile, done) {
+        UserManager.findOrCreate(profile, function (err, user) {
+            return done(err, user);
+        });
+    }
+));
+var auth = function(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    res.send(401);
+};
+
+// Connect to MognoDB
 mongoose.connect('mongodb://'+CONFIG.mongo.host+':'+CONFIG.mongo.port+'/'+CONFIG.mongo.db);
 
+// Express
 var app = express();
-
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(allowCrossDomain);
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routers
+app.get('/auth/github', passport.authenticate('github'));
+app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/' }));
+
 var hookController = new HookController(mongoose);
 app.post('/hook/:key', function(req, res){
     hookController.post(req, res)
@@ -61,10 +86,11 @@ app.get('/file/:owner/:repo/:name/data', function(req, res){
     fileController.getData(req, res);
 });
 
-app.use(cookieParser());
+// Static Files
 app.use(express.static(path.join(__dirname, 'front')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Error Handlers
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;

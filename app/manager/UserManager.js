@@ -1,0 +1,32 @@
+var Schema = require('./../common/Schema'),
+    MailManager = require('./MailManager'),
+    logger = require('../common/Logger');
+
+function UserManager(mongoose){
+
+    var User = mongoose.model(Schema.user.name, Schema.user.schema);
+
+    this.findOrCreate = function(profile, callback){
+        User.findById(profile.id, function(err, user){
+            if(err){
+                callback(err);
+            }else if(user !== null){
+                callback(null, user);
+            }else{
+                logger.debug("UserManager: New User %s", profile.username);
+                var user = new User({
+                    id: profile.id,
+                    username: profile.username,
+                    displayName: profile.displayName,
+                    email: user.emails[0].value
+                });
+                user.save(function(err, user){
+                    MailManager.signup(user.displayName, user.email);
+                    callback(err, user);
+                });
+            }
+        });
+    }
+}
+
+module.exports = UserManager;
