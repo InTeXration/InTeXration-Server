@@ -5,7 +5,7 @@ var _ = require('underscore'),
     logger = require('../common/Logger'),
     CONFIG = require('config');
 
-function MailManager(){
+function MailController(){
 
     this.send = function(to, subject, template, data){
         var templatePath = p.resolve(__dirname, '../../', 'templates', template);
@@ -19,8 +19,8 @@ function MailManager(){
             html: html
         };
         mail(options, function(err){
-            if(err) logger.error("MailManager: Error", {error: err});
-            else logger.debug("MailManager: Mail Sent", {mail: options});
+            if(err) logger.error("MailController: Error", {error: err});
+            else logger.debug("MailController: Mail Sent", {mail: options});
         });
     };
 
@@ -29,4 +29,4 @@ function MailManager(){
     };
 }
 
-module.exports = MailManager;
+module.exports = MailController;

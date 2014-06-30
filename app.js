@@ -9,14 +9,20 @@ var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
 var CONFIG = require('config');
 
-var HookController = require('./app/controller/HookController');
-var FileController = require('./app/controller/FileController');
-var BuildController = require('./app/controller/BuildController');
-var ApiController = require('./app/controller/ApiController');
-var UserManager = require('./app/manager/UserManager');
-
 // Connect to MognoDB
 mongoose.connect('mongodb://'+CONFIG.mongo.host+':'+CONFIG.mongo.port+'/'+CONFIG.mongo.db);
+
+// Controllers
+var FileController = require('./app/controller/FileController');
+var fileController = new FileController(mongoose);
+var BuildController = require('./app/controller/BuildController');
+var buildController = new BuildController(mongoose);
+var ApiController = require('./app/controller/ApiController');
+var apiController = new ApiController(mongoose);
+var UserController = require('./app/controller/UserController');
+var userController = new UserController(mongoose);
+var HookController = require('./app/controller/HookController');
+var hookController = new HookController(mongoose, apiController);
 
 // Cross-Origin Resource Sharing
 var allowCrossDomain = function(req, res, next) {
@@ -26,10 +32,9 @@ var allowCrossDomain = function(req, res, next) {
 };
 
 // Passport
-var userManager = new UserManager(mongoose);
 passport.use(new GitHubStrategy(CONFIG.oauth.github,
     function(accessToken, refreshToken, profile, done) {
-        userManager.findOrCreate(profile, function (err, user) {
+        userController.findOrCreate(profile, function (err, user) {
             return done(err, user);
         });
     }
@@ -59,11 +64,11 @@ app.use(session({ secret: 'AKDFOOCH'}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routers
+// Passport Routes
 app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/' }));
 
-var apiController = new ApiController(mongoose);
+// API Routes
 app.get('/api', auth, function(req, res){
     apiController.getAll(req, res);
 });
@@ -77,8 +82,12 @@ app.delete('/api/:key', auth, function(req, res){
     apiController.remove(req, res);
 });
 
+// User Routes
+app.get('/user', auth, function(req, res){
+    userController.get(req, res);
+});
 
-var hookController = new HookController(mongoose, apiController);
+// Hook Routes
 app.post('/hook/:key', function(req, res){
     hookController.post(req, res)
 });
@@ -89,20 +98,18 @@ app.get('/hook/:owner/:repo',  function(req, res){
     hookController.getByRepo(req, res);
 });
 
-var buildController = new BuildController(mongoose);
+// Build Routes
 app.get('/build',  function(req, res){
     buildController.getAll(req, res);
 });
-
 app.get('/build/:owner/:repo',  function(req, res){
     buildController.getByRepo(req, res);
 });
-
 app.get('/build/:id',  function(req, res){
     buildController.get(req, res);
 });
 
-var fileController = new FileController(mongoose);
+// File Routes
 app.get('/file/:owner/:repo/:name/pdf', function(req, res){
     fileController.getPdf(req, res);
 });

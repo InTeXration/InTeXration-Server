@@ -1,11 +1,19 @@
 var Schema = require('./../common/Schema'),
-    MailManager = require('./MailManager'),
+    MailController = require('./MailController'),
     logger = require('../common/Logger');
 
-function UserManager(mongoose){
+function UserController(mongoose){
 
     var User = mongoose.model(Schema.user.name, Schema.user.schema);
-    var mailManager = new MailManager();
+    var mailController = new MailController();
+
+    this.get =function(req, res){
+        var user = req._passport.session.user;
+        User.findOne({githubId: user.githubId}, function(err, user){
+            if(err) res.status(500).json({message: err.message});
+            else res.json(user);
+        });
+    };
 
     this.findOrCreate = function(profile, callback){
         User.findOne({githubId: profile.id}, function(err, user){
@@ -14,7 +22,7 @@ function UserManager(mongoose){
             }else if(user !== null){
                 callback(null, user);
             }else{
-                logger.debug("UserManager: New User %s", profile.username);
+                logger.debug("UserController: New User %s", profile.username);
                 var user = new User({
                     githubId: profile.id,
                     username: profile.username,
@@ -22,7 +30,7 @@ function UserManager(mongoose){
                     email: profile.emails[0].value
                 });
                 user.save(function(err, user){
-                    mailManager.signup(user.displayName, user.email);
+                    mailController.signup(user.displayName, user.email);
                     callback(err, user);
                 });
             }
@@ -30,4 +38,4 @@ function UserManager(mongoose){
     }
 }
 
-module.exports = UserManager;
+module.exports = UserController;
