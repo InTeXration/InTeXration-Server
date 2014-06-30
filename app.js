@@ -34,6 +34,7 @@ var allowCrossDomain = function(req, res, next) {
 // Passport
 passport.use(new GitHubStrategy(CONFIG.oauth.github,
     function(accessToken, refreshToken, profile, done) {
+        console.log(profile);
         userController.findOrCreate(profile, function (err, user) {
             return done(err, user);
         });
@@ -128,7 +129,6 @@ app.get('/file/:owner/:repo/:name/data', function(req, res){
 app.get('*', function(req, res){
     res.status(200).sendfile('./front/index.html');
 });
-
 
 // Error Handlers
 app.use(function(req, res, next) {
