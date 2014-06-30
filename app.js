@@ -37,7 +37,12 @@ var auth = function(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
     res.send(401);
 };
-
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+passport.deserializeUser(function(obj, done) {
+    done(null, obj);
+});
 
 // Express
 var app = express();
